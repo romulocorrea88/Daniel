@@ -1,6 +1,7 @@
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import Colors from "../constants/Colors";
 
 const HomeMetricsPanel = ({ userName, answeredPrayers, consecutiveDays }) => {
   return (
@@ -9,13 +10,13 @@ const HomeMetricsPanel = ({ userName, answeredPrayers, consecutiveDays }) => {
       
       <View style={styles.metricsContainer}>
         <View style={styles.metricCard}>
-          <Ionicons name="checkmark-circle" size={32} color="#DC2626" />
+          <Ionicons name="checkmark-circle" size={32} color={Colors.success} />
           <Text style={styles.metricValue}>{answeredPrayers}</Text>
           <Text style={styles.metricLabel}>Orações Respondidas</Text>
         </View>
 
         <View style={styles.metricCard}>
-          <Ionicons name="flame" size={32} color="#F59E0B" />
+          <Ionicons name="flame" size={32} color={Colors.accentYellow} />
           <Text style={styles.metricValue}>{consecutiveDays}</Text>
           <Text style={styles.metricLabel}>Dias Consecutivos</Text>
         </View>
@@ -26,14 +27,14 @@ const HomeMetricsPanel = ({ userName, answeredPrayers, consecutiveDays }) => {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: "#FFFFFF",
+    backgroundColor: Colors.backgroundWhite,
     paddingHorizontal: 20,
     paddingVertical: 24,
   },
   greeting: {
     fontSize: 28,
     fontWeight: "bold",
-    color: "#1F2937",
+    color: Colors.textPrimary,
     marginBottom: 20,
   },
   metricsContainer: {
@@ -43,22 +44,22 @@ const styles = StyleSheet.create({
   },
   metricCard: {
     flex: 1,
-    backgroundColor: "#F9FAFB",
+    backgroundColor: Colors.secondaryMintLight + "40",
     borderRadius: 12,
     padding: 16,
     alignItems: "center",
     borderWidth: 1,
-    borderColor: "#E5E7EB",
+    borderColor: Colors.borderLight,
   },
   metricValue: {
     fontSize: 24,
     fontWeight: "bold",
-    color: "#1F2937",
+    color: Colors.textPrimary,
     marginTop: 8,
   },
   metricLabel: {
     fontSize: 12,
-    color: "#6B7280",
+    color: Colors.textSecondary,
     textAlign: "center",
     marginTop: 4,
   },

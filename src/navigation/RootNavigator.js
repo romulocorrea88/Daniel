@@ -3,6 +3,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Ionicons } from "@expo/vector-icons";
+import Colors from "../constants/Colors";
 
 import SplashScreen from "../screens/SplashScreen";
 import AuthScreen from "../screens/AuthScreen";
@@ -38,15 +39,15 @@ const MainTabs = () => {
 
           return <Ionicons name={iconName} size={size} color={color} />;
         },
-        tabBarActiveTintColor: "#DC2626",
-        tabBarInactiveTintColor: "#9CA3AF",
+        tabBarActiveTintColor: Colors.primaryGreen,
+        tabBarInactiveTintColor: Colors.textTertiary,
         tabBarStyle: {
           height: 60,
           paddingBottom: 8,
           paddingTop: 8,
           borderTopWidth: 1,
-          borderTopColor: "#E5E7EB",
-          backgroundColor: "#FFFFFF",
+          borderTopColor: Colors.border,
+          backgroundColor: Colors.backgroundWhite,
         },
         tabBarLabelStyle: {
           fontSize: 12,

@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, Pressable, TextInput, KeyboardAvoidingView, Pla
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import useAuthStore from "../state/authStore";
+import Colors from "../constants/Colors";
 
 const AuthScreen = ({ navigation }) => {
   const insets = useSafeAreaInsets();
@@ -92,12 +93,12 @@ const AuthScreen = ({ navigation }) => {
             style={styles.closeButton}
             onPress={() => navigation.goBack()}
           >
-            <Ionicons name="close" size={28} color="#1F2937" />
+            <Ionicons name="close" size={28} color="Colors.textPrimary" />
           </Pressable>
         </View>
 
         <View style={styles.content}>
-          <Ionicons name="prism-outline" size={60} color="#DC2626" />
+          <Ionicons name="prism-outline" size={60} color="Colors.primaryGreen" />
           
           <Text style={styles.title}>
             {hasGuestPrayers 
@@ -113,7 +114,7 @@ const AuthScreen = ({ navigation }) => {
 
           {hasGuestPrayers && (
             <View style={styles.guestInfoCard}>
-              <Ionicons name="information-circle" size={24} color="#DC2626" />
+              <Ionicons name="information-circle" size={24} color="Colors.primaryGreen" />
               <Text style={styles.guestInfoText}>
                 Você tem {guestPrayers.length} pedido(s) que será(ão) salvo(s) após criar sua conta
               </Text>
@@ -132,7 +133,7 @@ const AuthScreen = ({ navigation }) => {
               onPress={() => handleSocialLogin("google")}
               disabled={isLoading}
             >
-              <Ionicons name="logo-google" size={24} color="#DC2626" />
+              <Ionicons name="logo-google" size={24} color="Colors.primaryGreen" />
               <Text style={styles.socialButtonText}>Continuar com Google</Text>
             </Pressable>
 
@@ -147,7 +148,7 @@ const AuthScreen = ({ navigation }) => {
                 onPress={() => handleSocialLogin("apple")}
                 disabled={isLoading}
               >
-                <Ionicons name="logo-apple" size={24} color="#FFFFFF" />
+                <Ionicons name="logo-apple" size={24} color="Colors.backgroundWhite" />
                 <Text style={styles.appleButtonText}>Continuar com Apple</Text>
               </Pressable>
             )}
@@ -207,7 +208,7 @@ const AuthScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#FFFFFF",
+    backgroundColor: "Colors.backgroundWhite",
   },
   scrollContent: {
     flexGrow: 1,
@@ -230,14 +231,14 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 28,
     fontWeight: "bold",
-    color: "#1F2937",
+    color: "Colors.textPrimary",
     textAlign: "center",
     marginTop: 24,
     marginBottom: 12,
   },
   subtitle: {
     fontSize: 16,
-    color: "#6B7280",
+    color: "Colors.textSecondary",
     textAlign: "center",
     marginBottom: 32,
     paddingHorizontal: 20,
@@ -245,7 +246,7 @@ const styles = StyleSheet.create({
   guestInfoCard: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#FEE2E2",
+    backgroundColor: "Colors.secondaryMintLight + "60"",
     padding: 16,
     borderRadius: 12,
     marginBottom: 24,
@@ -254,7 +255,7 @@ const styles = StyleSheet.create({
   guestInfoText: {
     flex: 1,
     fontSize: 14,
-    color: "#991B1B",
+    color: ""#1B5E20"",
     lineHeight: 20,
   },
   socialButtonsContainer: {
@@ -271,8 +272,8 @@ const styles = StyleSheet.create({
     borderWidth: 1,
   },
   googleButton: {
-    backgroundColor: "#FFFFFF",
-    borderColor: "#E5E7EB",
+    backgroundColor: "Colors.backgroundWhite",
+    borderColor: "Colors.border",
   },
   appleButton: {
     backgroundColor: "#000000",
@@ -284,12 +285,12 @@ const styles = StyleSheet.create({
   socialButtonText: {
     fontSize: 16,
     fontWeight: "600",
-    color: "#1F2937",
+    color: "Colors.textPrimary",
   },
   appleButtonText: {
     fontSize: 16,
     fontWeight: "600",
-    color: "#FFFFFF",
+    color: "Colors.backgroundWhite",
   },
   divider: {
     flexDirection: "row",
@@ -300,11 +301,11 @@ const styles = StyleSheet.create({
   dividerLine: {
     flex: 1,
     height: 1,
-    backgroundColor: "#E5E7EB",
+    backgroundColor: "Colors.border",
   },
   dividerText: {
     fontSize: 14,
-    color: "#9CA3AF",
+    color: "Colors.textTertiary",
     marginHorizontal: 16,
   },
   emailForm: {
@@ -312,36 +313,36 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   input: {
-    backgroundColor: "#F9FAFB",
+    backgroundColor: "Colors.background",
     borderWidth: 1,
-    borderColor: "#E5E7EB",
+    borderColor: "Colors.border",
     borderRadius: 12,
     paddingHorizontal: 16,
     paddingVertical: 14,
     fontSize: 16,
-    color: "#1F2937",
+    color: "Colors.textPrimary",
   },
   emailButton: {
-    backgroundColor: "#DC2626",
+    backgroundColor: "Colors.primaryGreen",
     paddingVertical: 14,
     borderRadius: 12,
     alignItems: "center",
     marginTop: 8,
   },
   emailButtonPressed: {
-    backgroundColor: "#B91C1C",
+    backgroundColor: "Colors.primaryGreenDark",
   },
   emailButtonText: {
     fontSize: 16,
     fontWeight: "600",
-    color: "#FFFFFF",
+    color: "Colors.backgroundWhite",
   },
   buttonDisabled: {
     opacity: 0.5,
   },
   termsText: {
     fontSize: 12,
-    color: "#9CA3AF",
+    color: "Colors.textTertiary",
     textAlign: "center",
     marginTop: 24,
     lineHeight: 18,

@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { View, Text, StyleSheet, Image } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import Colors from "../constants/Colors";
 
 const SplashScreen = ({ navigation }) => {
   useEffect(() => {
@@ -14,7 +15,7 @@ const SplashScreen = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <View style={styles.logoContainer}>
-        <Ionicons name="prism-outline" size={80} color="#DC2626" />
+        <Ionicons name="prism-outline" size={80} color={Colors.primaryGreen} />
         <Text style={styles.logoText}>Daniel</Text>
         <Text style={styles.tagline}>orando sempre</Text>
       </View>
@@ -25,7 +26,7 @@ const SplashScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#FFFFFF",
+    backgroundColor: Colors.backgroundWhite,
     justifyContent: "center",
     alignItems: "center",
   },
@@ -35,12 +36,12 @@ const styles = StyleSheet.create({
   logoText: {
     fontSize: 48,
     fontWeight: "bold",
-    color: "#DC2626",
+    color: Colors.primaryGreen,
     marginTop: 16,
   },
   tagline: {
     fontSize: 18,
-    color: "#000000",
+    color: Colors.textPrimary,
     marginTop: 8,
   },
 });

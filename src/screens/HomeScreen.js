@@ -6,6 +6,7 @@ import HomeMetricsPanel from "../components/HomeMetricsPanel";
 import PrayerItem from "../components/PrayerItem";
 import { mockUser, mockFriendsPrayers, mockDevotional } from "../utils/mockData";
 import useAuthStore from "../state/authStore";
+import Colors from "../constants/Colors";
 
 const HomeScreen = ({ navigation }) => {
   const insets = useSafeAreaInsets();
@@ -49,7 +50,7 @@ const HomeScreen = ({ navigation }) => {
           ]}
           onPress={handlePrayNow}
         >
-          <Ionicons name="prism" size={32} color="#FFFFFF" />
+          <Ionicons name="prism" size={32} color={Colors.textWhite} />
           <Text style={styles.prayNowText}>ORAR AGORA</Text>
         </Pressable>
       </View>
@@ -57,7 +58,7 @@ const HomeScreen = ({ navigation }) => {
       {/* 3. Secondary Content - Friends' Prayers */}
       <View style={styles.sectionContainer}>
         <View style={styles.sectionHeader}>
-          <Ionicons name="people" size={24} color="#1F2937" />
+          <Ionicons name="people" size={24} color={Colors.textPrimary} />
           <Text style={styles.sectionTitle}>Ore por seus amigos</Text>
         </View>
         
@@ -76,14 +77,14 @@ const HomeScreen = ({ navigation }) => {
           onPress={() => navigation.navigate("Community")}
         >
           <Text style={styles.seeAllText}>Ver todos os pedidos</Text>
-          <Ionicons name="arrow-forward" size={18} color="#DC2626" />
+          <Ionicons name="arrow-forward" size={18} color={Colors.primaryGreen} />
         </Pressable>
       </View>
 
       {/* 4. Devotional Section */}
       <View style={styles.devotionalContainer}>
         <View style={styles.sectionHeader}>
-          <Ionicons name="book" size={24} color="#1F2937" />
+          <Ionicons name="book" size={24} color={Colors.textPrimary} />
           <Text style={styles.sectionTitle}>Texto Bíblico do Dia</Text>
         </View>
         
@@ -103,7 +104,7 @@ const HomeScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#F9FAFB",
+    backgroundColor: Colors.background,
   },
   contentContainer: {
     paddingTop: 0,
@@ -113,7 +114,7 @@ const styles = StyleSheet.create({
     paddingVertical: 24,
   },
   prayNowButton: {
-    backgroundColor: "#DC2626",
+    backgroundColor: Colors.primaryGreen,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
@@ -127,12 +128,12 @@ const styles = StyleSheet.create({
     shadowRadius: 3.84,
   },
   prayNowButtonPressed: {
-    backgroundColor: "#B91C1C",
+    backgroundColor: Colors.primaryGreenDark,
   },
   prayNowText: {
     fontSize: 20,
     fontWeight: "bold",
-    color: "#FFFFFF",
+    color: Colors.textWhite,
     letterSpacing: 1,
   },
   sectionContainer: {
@@ -148,7 +149,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 20,
     fontWeight: "bold",
-    color: "#1F2937",
+    color: Colors.textPrimary,
   },
   seeAllButton: {
     flexDirection: "row",
@@ -160,40 +161,40 @@ const styles = StyleSheet.create({
   seeAllText: {
     fontSize: 16,
     fontWeight: "600",
-    color: "#DC2626",
+    color: Colors.primaryGreen,
   },
   devotionalContainer: {
     paddingHorizontal: 20,
     paddingVertical: 16,
   },
   devotionalCard: {
-    backgroundColor: "#FFFFFF",
+    backgroundColor: Colors.backgroundWhite,
     borderRadius: 12,
     padding: 20,
     borderWidth: 1,
-    borderColor: "#E5E7EB",
+    borderColor: Colors.border,
   },
   verseText: {
     fontSize: 18,
     fontStyle: "italic",
-    color: "#1F2937",
+    color: Colors.textPrimary,
     lineHeight: 28,
     marginBottom: 8,
   },
   referenceText: {
     fontSize: 14,
     fontWeight: "600",
-    color: "#DC2626",
+    color: Colors.primaryGreen,
     marginBottom: 16,
   },
   reflectionContainer: {
     paddingTop: 16,
     borderTopWidth: 1,
-    borderTopColor: "#E5E7EB",
+    borderTopColor: Colors.border,
   },
   reflectionText: {
     fontSize: 14,
-    color: "#6B7280",
+    color: Colors.textSecondary,
     lineHeight: 22,
   },
 });

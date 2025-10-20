@@ -1,6 +1,7 @@
 import React from "react";
 import { View, Text, StyleSheet, Pressable } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import Colors from "../constants/Colors";
 
 const PrayerItem = ({ friendName, prayerRequest, category, onPress }) => {
   const getCategoryIcon = (category) => {
@@ -25,7 +26,7 @@ const PrayerItem = ({ friendName, prayerRequest, category, onPress }) => {
       onPress={onPress}
     >
       <View style={styles.iconContainer}>
-        <Ionicons name={getCategoryIcon(category)} size={24} color="#DC2626" />
+        <Ionicons name={getCategoryIcon(category)} size={24} color={Colors.primaryGreen} />
       </View>
       
       <View style={styles.contentContainer}>
@@ -36,7 +37,7 @@ const PrayerItem = ({ friendName, prayerRequest, category, onPress }) => {
         <Text style={styles.category}>{category}</Text>
       </View>
 
-      <Ionicons name="chevron-forward" size={20} color="#9CA3AF" />
+      <Ionicons name="chevron-forward" size={20} color={Colors.textTertiary} />
     </Pressable>
   );
 };
@@ -45,21 +46,21 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#FFFFFF",
+    backgroundColor: Colors.backgroundWhite,
     padding: 16,
     borderRadius: 12,
     marginBottom: 12,
     borderWidth: 1,
-    borderColor: "#E5E7EB",
+    borderColor: Colors.border,
   },
   pressed: {
-    backgroundColor: "#F3F4F6",
+    backgroundColor: Colors.background,
   },
   iconContainer: {
     width: 48,
     height: 48,
     borderRadius: 24,
-    backgroundColor: "#FEE2E2",
+    backgroundColor: Colors.secondaryMintLight + "60",
     justifyContent: "center",
     alignItems: "center",
     marginRight: 12,
@@ -70,18 +71,18 @@ const styles = StyleSheet.create({
   friendName: {
     fontSize: 16,
     fontWeight: "600",
-    color: "#1F2937",
+    color: Colors.textPrimary,
     marginBottom: 4,
   },
   prayerRequest: {
     fontSize: 14,
-    color: "#6B7280",
+    color: Colors.textSecondary,
     marginBottom: 4,
     lineHeight: 20,
   },
   category: {
     fontSize: 12,
-    color: "#DC2626",
+    color: Colors.primaryGreen,
     fontWeight: "500",
   },
 });
