@@ -1,6 +1,8 @@
 import React from "react";
 import { View, Text, StyleSheet, ScrollView, Pressable } from "react-native";
+import Colors from "../constants/Colors";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import Colors from "../constants/Colors";
 import { Ionicons } from "@expo/vector-icons";
 import PrayerItem from "../components/PrayerItem";
 import { mockFriendsPrayers } from "../utils/mockData";
@@ -17,19 +19,19 @@ const CommunityScreen = ({ navigation }) => {
       <View style={styles.header}>
         <Text style={styles.headerTitle}>Amigos</Text>
         <Pressable style={styles.addFriendButton}>
-          <Ionicons name="person-add" size={24} color="#DC2626" />
+          <Ionicons name="person-add" size={24} color={Colors.primaryGreen} />
         </Pressable>
       </View>
 
       <View style={styles.statsContainer}>
         <View style={styles.statBox}>
-          <Ionicons name="people" size={24} color="#DC2626" />
+          <Ionicons name="people" size={24} color={Colors.primaryGreen} />
           <Text style={styles.statValue}>12</Text>
           <Text style={styles.statLabel}>Amigos</Text>
         </View>
 
         <View style={styles.statBox}>
-          <Ionicons name="heart" size={24} color="#DC2626" />
+          <Ionicons name="heart" size={24} color={Colors.primaryGreen} />
           <Text style={styles.statValue}>34</Text>
           <Text style={styles.statLabel}>Orações Feitas</Text>
         </View>
@@ -61,7 +63,7 @@ const CommunityScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#F9FAFB",
+    backgroundColor: Colors.background,
   },
   header: {
     flexDirection: "row",
@@ -69,14 +71,14 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingHorizontal: 20,
     paddingVertical: 16,
-    backgroundColor: "#FFFFFF",
+    backgroundColor: Colors.backgroundWhite,
     borderBottomWidth: 1,
-    borderBottomColor: "#E5E7EB",
+    borderBottomColor: Colors.border,
   },
   headerTitle: {
     fontSize: 28,
     fontWeight: "bold",
-    color: "#1F2937",
+    color: Colors.textPrimary,
   },
   addFriendButton: {
     padding: 4,
@@ -86,26 +88,26 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingVertical: 20,
     gap: 12,
-    backgroundColor: "#FFFFFF",
+    backgroundColor: Colors.backgroundWhite,
   },
   statBox: {
     flex: 1,
-    backgroundColor: "#F9FAFB",
+    backgroundColor: Colors.background,
     borderRadius: 12,
     padding: 16,
     alignItems: "center",
     borderWidth: 1,
-    borderColor: "#E5E7EB",
+    borderColor: Colors.border,
   },
   statValue: {
     fontSize: 24,
     fontWeight: "bold",
-    color: "#1F2937",
+    color: Colors.textPrimary,
     marginTop: 8,
   },
   statLabel: {
     fontSize: 12,
-    color: "#6B7280",
+    color: Colors.textSecondary,
     marginTop: 4,
     textAlign: "center",
   },
@@ -118,7 +120,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 20,
     fontWeight: "bold",
-    color: "#1F2937",
+    color: Colors.textPrimary,
     marginBottom: 16,
   },
 });

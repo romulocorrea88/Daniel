@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { View, Text, StyleSheet, ScrollView, Pressable } from "react-native";
+import Colors from "../constants/Colors";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import Colors from "../constants/Colors";
 import { Ionicons } from "@expo/vector-icons";
 import { mockMyPrayers } from "../utils/mockData";
 import CreatePrayerModal from "../components/CreatePrayerModal";
@@ -29,12 +31,12 @@ const MyPrayersScreen = ({ navigation }) => {
 
   const getCategoryColor = (category) => {
     const colors = {
-      Trabalho: "#3B82F6",
-      Saúde: "#10B981",
-      Família: "#8B5CF6",
-      Pessoal: "#F59E0B",
+      Trabalho: Colors.categoryWork,
+      Saúde: Colors.success,
+      Família: Colors.categoryFamily,
+      Pessoal: Colors.accentYellow,
     };
-    return colors[category] || "#6B7280";
+    return colors[category] || "Colors.textSecondary;
   };
 
   return (
@@ -45,7 +47,7 @@ const MyPrayersScreen = ({ navigation }) => {
           style={styles.addButton}
           onPress={() => setShowCreateModal(true)}
         >
-          <Ionicons name="add-circle" size={32} color="#DC2626" />
+          <Ionicons name="add-circle" size={32} color={Colors.primaryGreen} />
         </Pressable>
       </View>
 
@@ -91,7 +93,7 @@ const MyPrayersScreen = ({ navigation }) => {
               <View style={styles.prayerTitleRow}>
                 <Text style={styles.prayerTitle}>{prayer.title}</Text>
                 {prayer.isAnswered && (
-                  <Ionicons name="checkmark-circle" size={24} color="#10B981" />
+                  <Ionicons name="checkmark-circle" size={24} color={Colors.success} />
                 )}
               </View>
               <Text style={styles.prayerDate}>
@@ -119,7 +121,7 @@ const MyPrayersScreen = ({ navigation }) => {
               </View>
 
               <Pressable style={styles.menuButton}>
-                <Ionicons name="ellipsis-horizontal" size={20} color="#6B7280" />
+                <Ionicons name="ellipsis-horizontal" size={20} color={Colors.textSecondary} />
               </Pressable>
             </View>
           </View>
@@ -138,7 +140,7 @@ const MyPrayersScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#F9FAFB",
+    backgroundColor: Colors.background,
   },
   header: {
     flexDirection: "row",
@@ -146,14 +148,14 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingHorizontal: 20,
     paddingVertical: 16,
-    backgroundColor: "#FFFFFF",
+    backgroundColor: Colors.backgroundWhite,
     borderBottomWidth: 1,
-    borderBottomColor: "#E5E7EB",
+    borderBottomColor: Colors.border,
   },
   headerTitle: {
     fontSize: 28,
     fontWeight: "bold",
-    color: "#1F2937",
+    color: Colors.textPrimary,
   },
   addButton: {
     padding: 4,
@@ -163,24 +165,24 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingVertical: 16,
     gap: 8,
-    backgroundColor: "#FFFFFF",
+    backgroundColor: Colors.backgroundWhite,
   },
   filterButton: {
     paddingHorizontal: 16,
     paddingVertical: 8,
     borderRadius: 20,
-    backgroundColor: "#F3F4F6",
+    backgroundColor: Colors.background,
   },
   filterButtonActive: {
-    backgroundColor: "#DC2626",
+    backgroundColor: Colors.primaryGreen,
   },
   filterText: {
     fontSize: 14,
     fontWeight: "600",
-    color: "#6B7280",
+    color: Colors.textSecondary,
   },
   filterTextActive: {
-    color: "#FFFFFF",
+    color: Colors.backgroundWhite,
   },
   scrollView: {
     flex: 1,
@@ -189,12 +191,12 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   prayerCard: {
-    backgroundColor: "#FFFFFF",
+    backgroundColor: Colors.backgroundWhite,
     borderRadius: 12,
     padding: 16,
     marginBottom: 16,
     borderWidth: 1,
-    borderColor: "#E5E7EB",
+    borderColor: Colors.border,
   },
   prayerHeader: {
     marginBottom: 12,
@@ -208,16 +210,16 @@ const styles = StyleSheet.create({
   prayerTitle: {
     fontSize: 18,
     fontWeight: "bold",
-    color: "#1F2937",
+    color: Colors.textPrimary,
     flex: 1,
   },
   prayerDate: {
     fontSize: 12,
-    color: "#9CA3AF",
+    color: Colors.textTertiary,
   },
   prayerDescription: {
     fontSize: 14,
-    color: "#6B7280",
+    color: Colors.textSecondary,
     lineHeight: 20,
     marginBottom: 12,
   },

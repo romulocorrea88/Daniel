@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, StyleSheet, Pressable } from "react-native";
+import Colors from "../constants/Colors";
 import { Ionicons } from "@expo/vector-icons";
 
 const FocusModeTimer = ({ navigation }) => {
@@ -51,11 +52,11 @@ const FocusModeTimer = ({ navigation }) => {
         style={styles.closeButton}
         onPress={() => navigation.goBack()}
       >
-        <Ionicons name="close" size={32} color="#FFFFFF" />
+        <Ionicons name="close" size={32} color={Colors.backgroundWhite} />
       </Pressable>
 
       <View style={styles.contentContainer}>
-        <Ionicons name="prism-outline" size={60} color="#FFFFFF" style={styles.icon} />
+        <Ionicons name="prism-outline" size={60} color={Colors.backgroundWhite} style={styles.icon} />
         
         <Text style={styles.title}>Modo Oração</Text>
         
@@ -78,7 +79,7 @@ const FocusModeTimer = ({ navigation }) => {
             <Ionicons 
               name={isActive ? "pause" : "play"} 
               size={32} 
-              color="#1F2937" 
+              color={Colors.textPrimary} 
             />
           </Pressable>
 
@@ -90,7 +91,7 @@ const FocusModeTimer = ({ navigation }) => {
               ]}
               onPress={handleReset}
             >
-              <Ionicons name="refresh" size={28} color="#FFFFFF" />
+              <Ionicons name="refresh" size={28} color={Colors.backgroundWhite} />
             </Pressable>
           )}
         </View>
@@ -114,7 +115,7 @@ const FocusModeTimer = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#1F2937",
+    backgroundColor: Colors.textPrimary,
   },
   closeButton: {
     position: "absolute",
@@ -135,7 +136,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 32,
     fontWeight: "bold",
-    color: "#FFFFFF",
+    color: Colors.backgroundWhite,
     marginBottom: 40,
   },
   timerContainer: {
@@ -148,7 +149,7 @@ const styles = StyleSheet.create({
   timerText: {
     fontSize: 56,
     fontWeight: "bold",
-    color: "#FFFFFF",
+    color: Colors.backgroundWhite,
     fontVariant: ["tabular-nums"],
   },
   subtitle: {
@@ -164,7 +165,7 @@ const styles = StyleSheet.create({
     width: 80,
     height: 80,
     borderRadius: 40,
-    backgroundColor: "#FFFFFF",
+    backgroundColor: Colors.backgroundWhite,
     justifyContent: "center",
     alignItems: "center",
   },
@@ -184,12 +185,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: 32,
     paddingVertical: 16,
     borderRadius: 12,
-    backgroundColor: "#DC2626",
+    backgroundColor: Colors.primaryGreen,
   },
   finishButtonText: {
     fontSize: 18,
     fontWeight: "600",
-    color: "#FFFFFF",
+    color: Colors.backgroundWhite,
   },
 });
 

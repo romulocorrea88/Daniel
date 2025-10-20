@@ -1,6 +1,8 @@
 import React from "react";
 import { View, Text, StyleSheet, ScrollView, Pressable } from "react-native";
+import Colors from "../constants/Colors";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import Colors from "../constants/Colors";
 import { Ionicons } from "@expo/vector-icons";
 import { mockUser } from "../utils/mockData";
 import useAuthStore from "../state/authStore";
@@ -61,7 +63,7 @@ const ProfileScreen = ({ navigation }) => {
         {/* Profile Header */}
         <View style={styles.profileHeader}>
           <View style={styles.avatarContainer}>
-            <Ionicons name="person" size={48} color="#FFFFFF" />
+            <Ionicons name="person" size={48} color={Colors.backgroundWhite} />
           </View>
           <Text style={styles.userName}>{displayUser.name}</Text>
           <Text style={styles.userEmail}>{displayUser.email}</Text>
@@ -87,25 +89,25 @@ const ProfileScreen = ({ navigation }) => {
             
             <View style={styles.statsGrid}>
               <View style={styles.statCard}>
-                <Ionicons name="checkmark-circle" size={32} color="#10B981" />
+                <Ionicons name="checkmark-circle" size={32} color={Colors.success} />
                 <Text style={styles.statValue}>{mockUser.answeredPrayers}</Text>
                 <Text style={styles.statLabel}>Orações Respondidas</Text>
               </View>
 
             <View style={styles.statCard}>
-              <Ionicons name="flame" size={32} color="#F59E0B" />
+              <Ionicons name="flame" size={32} color={Colors.accentYellow} />
               <Text style={styles.statValue}>{mockUser.consecutiveDays}</Text>
               <Text style={styles.statLabel}>Dias Consecutivos</Text>
             </View>
 
             <View style={styles.statCard}>
-              <Ionicons name="time" size={32} color="#3B82F6" />
+              <Ionicons name="time" size={32} color={Colors.categoryWork} />
               <Text style={styles.statValue}>{mockUser.weeklyPrayerTime}m</Text>
               <Text style={styles.statLabel}>Tempo Semanal</Text>
             </View>
 
             <View style={styles.statCard}>
-              <Ionicons name="calendar" size={32} color="#8B5CF6" />
+              <Ionicons name="calendar" size={32} color={Colors.categoryFamily} />
               <Text style={styles.statValue}>{mockUser.monthlyPrayerTime}m</Text>
               <Text style={styles.statLabel}>Tempo Mensal</Text>
             </View>
@@ -124,7 +126,7 @@ const ProfileScreen = ({ navigation }) => {
               ]}
             >
               <View style={styles.menuIconContainer}>
-                <Ionicons name={item.icon} size={24} color="#DC2626" />
+                <Ionicons name={item.icon} size={24} color={Colors.primaryGreen} />
               </View>
               
               <View style={styles.menuContent}>
@@ -132,7 +134,7 @@ const ProfileScreen = ({ navigation }) => {
                 <Text style={styles.menuSubtitle}>{item.subtitle}</Text>
               </View>
 
-              <Ionicons name="chevron-forward" size={20} color="#9CA3AF" />
+              <Ionicons name="chevron-forward" size={20} color={Colors.textTertiary} />
             </Pressable>
           ))}
         </View>
@@ -143,7 +145,7 @@ const ProfileScreen = ({ navigation }) => {
             style={styles.logoutButton}
             onPress={handleLogout}
           >
-            <Ionicons name="log-out-outline" size={20} color="#DC2626" />
+            <Ionicons name="log-out-outline" size={20} color={Colors.primaryGreen} />
             <Text style={styles.logoutText}>Sair</Text>
           </Pressable>
         )}
@@ -155,7 +157,7 @@ const ProfileScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#F9FAFB",
+    backgroundColor: Colors.background,
   },
   scrollView: {
     flex: 1,
@@ -166,14 +168,14 @@ const styles = StyleSheet.create({
   profileHeader: {
     alignItems: "center",
     paddingVertical: 24,
-    backgroundColor: "#FFFFFF",
+    backgroundColor: Colors.backgroundWhite,
     marginBottom: 20,
   },
   avatarContainer: {
     width: 100,
     height: 100,
     borderRadius: 50,
-    backgroundColor: "#DC2626",
+    backgroundColor: Colors.primaryGreen,
     justifyContent: "center",
     alignItems: "center",
     marginBottom: 16,
@@ -181,12 +183,12 @@ const styles = StyleSheet.create({
   userName: {
     fontSize: 24,
     fontWeight: "bold",
-    color: "#1F2937",
+    color: Colors.textPrimary,
     marginBottom: 4,
   },
   userEmail: {
     fontSize: 14,
-    color: "#6B7280",
+    color: Colors.textSecondary,
     marginBottom: 16,
   },
   editButton: {
@@ -194,23 +196,23 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     borderRadius: 20,
     borderWidth: 1,
-    borderColor: "#DC2626",
+    borderColor: Colors.primaryGreen,
   },
   editButtonText: {
     fontSize: 14,
     fontWeight: "600",
-    color: "#DC2626",
+    color: Colors.primaryGreen,
   },
   loginButton: {
     paddingHorizontal: 24,
     paddingVertical: 12,
     borderRadius: 20,
-    backgroundColor: "#DC2626",
+    backgroundColor: Colors.primaryGreen,
   },
   loginButtonText: {
     fontSize: 14,
     fontWeight: "600",
-    color: "#FFFFFF",
+    color: Colors.backgroundWhite,
   },
   statsSection: {
     paddingHorizontal: 20,
@@ -219,7 +221,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 18,
     fontWeight: "bold",
-    color: "#1F2937",
+    color: Colors.textPrimary,
     marginBottom: 16,
   },
   statsGrid: {
@@ -229,22 +231,22 @@ const styles = StyleSheet.create({
   },
   statCard: {
     width: "48%",
-    backgroundColor: "#FFFFFF",
+    backgroundColor: Colors.backgroundWhite,
     borderRadius: 12,
     padding: 16,
     alignItems: "center",
     borderWidth: 1,
-    borderColor: "#E5E7EB",
+    borderColor: Colors.border,
   },
   statValue: {
     fontSize: 20,
     fontWeight: "bold",
-    color: "#1F2937",
+    color: Colors.textPrimary,
     marginTop: 8,
   },
   statLabel: {
     fontSize: 12,
-    color: "#6B7280",
+    color: Colors.textSecondary,
     textAlign: "center",
     marginTop: 4,
   },
@@ -255,21 +257,21 @@ const styles = StyleSheet.create({
   menuItem: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#FFFFFF",
+    backgroundColor: Colors.backgroundWhite,
     borderRadius: 12,
     padding: 16,
     marginBottom: 8,
     borderWidth: 1,
-    borderColor: "#E5E7EB",
+    borderColor: Colors.border,
   },
   menuItemPressed: {
-    backgroundColor: "#F3F4F6",
+    backgroundColor: Colors.background,
   },
   menuIconContainer: {
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: "#FEE2E2",
+    backgroundColor: "Colors.secondaryMintLight + "60"",
     justifyContent: "center",
     alignItems: "center",
     marginRight: 12,
@@ -280,12 +282,12 @@ const styles = StyleSheet.create({
   menuTitle: {
     fontSize: 16,
     fontWeight: "600",
-    color: "#1F2937",
+    color: Colors.textPrimary,
     marginBottom: 2,
   },
   menuSubtitle: {
     fontSize: 12,
-    color: "#6B7280",
+    color: Colors.textSecondary,
   },
   logoutButton: {
     flexDirection: "row",
@@ -295,13 +297,13 @@ const styles = StyleSheet.create({
     paddingVertical: 14,
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: "#DC2626",
+    borderColor: Colors.primaryGreen,
     gap: 8,
   },
   logoutText: {
     fontSize: 16,
     fontWeight: "600",
-    color: "#DC2626",
+    color: Colors.primaryGreen,
   },
 });
 

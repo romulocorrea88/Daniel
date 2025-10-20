@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { View, Text, StyleSheet, Modal, TextInput, Pressable, KeyboardAvoidingView, Platform, ScrollView } from "react-native";
+import Colors from "../constants/Colors";
 import { Ionicons } from "@expo/vector-icons";
 import useAuthStore from "../state/authStore";
 
@@ -62,7 +63,7 @@ const CreatePrayerModal = ({ visible, onClose, navigation }) => {
       >
         <View style={styles.header}>
           <Pressable onPress={onClose}>
-            <Ionicons name="close" size={28} color="#1F2937" />
+            <Ionicons name="close" size={28} color={Colors.textPrimary} />
           </Pressable>
           <Text style={styles.headerTitle}>Novo Pedido</Text>
           <View style={{ width: 28 }} />
@@ -125,7 +126,7 @@ const CreatePrayerModal = ({ visible, onClose, navigation }) => {
 
             {isGuest && (
               <View style={styles.guestNotice}>
-                <Ionicons name="information-circle-outline" size={20} color="#DC2626" />
+                <Ionicons name="information-circle-outline" size={20} color={Colors.primaryGreen} />
                 <Text style={styles.guestNoticeText}>
                   Você será direcionado para criar sua conta após adicionar este pedido
                 </Text>
@@ -157,7 +158,7 @@ const CreatePrayerModal = ({ visible, onClose, navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#FFFFFF",
+    backgroundColor: Colors.backgroundWhite,
   },
   header: {
     flexDirection: "row",
@@ -166,12 +167,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingVertical: 16,
     borderBottomWidth: 1,
-    borderBottomColor: "#E5E7EB",
+    borderBottomColor: Colors.border,
   },
   headerTitle: {
     fontSize: 18,
     fontWeight: "bold",
-    color: "#1F2937",
+    color: Colors.textPrimary,
   },
   scrollView: {
     flex: 1,
@@ -188,17 +189,17 @@ const styles = StyleSheet.create({
   label: {
     fontSize: 16,
     fontWeight: "600",
-    color: "#1F2937",
+    color: Colors.textPrimary,
   },
   input: {
-    backgroundColor: "#F9FAFB",
+    backgroundColor: Colors.background,
     borderWidth: 1,
-    borderColor: "#E5E7EB",
+    borderColor: Colors.border,
     borderRadius: 12,
     paddingHorizontal: 16,
     paddingVertical: 12,
     fontSize: 16,
-    color: "#1F2937",
+    color: Colors.textPrimary,
   },
   textArea: {
     minHeight: 100,
@@ -213,26 +214,26 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 8,
     borderRadius: 20,
-    backgroundColor: "#F3F4F6",
+    backgroundColor: Colors.background,
     borderWidth: 1,
-    borderColor: "#E5E7EB",
+    borderColor: Colors.border,
   },
   categoryChipActive: {
-    backgroundColor: "#DC2626",
-    borderColor: "#DC2626",
+    backgroundColor: Colors.primaryGreen,
+    borderColor: Colors.primaryGreen,
   },
   categoryText: {
     fontSize: 14,
     fontWeight: "600",
-    color: "#6B7280",
+    color: Colors.textSecondary,
   },
   categoryTextActive: {
-    color: "#FFFFFF",
+    color: Colors.backgroundWhite,
   },
   guestNotice: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#FEE2E2",
+    backgroundColor: "Colors.secondaryMintLight + "60"",
     padding: 12,
     borderRadius: 12,
     gap: 8,
@@ -246,24 +247,24 @@ const styles = StyleSheet.create({
   footer: {
     padding: 20,
     borderTopWidth: 1,
-    borderTopColor: "#E5E7EB",
+    borderTopColor: Colors.border,
   },
   createButton: {
-    backgroundColor: "#DC2626",
+    backgroundColor: Colors.primaryGreen,
     paddingVertical: 16,
     borderRadius: 12,
     alignItems: "center",
   },
   createButtonPressed: {
-    backgroundColor: "#B91C1C",
+    backgroundColor: Colors.primaryGreenDark,
   },
   createButtonDisabled: {
-    backgroundColor: "#9CA3AF",
+    backgroundColor: Colors.textTertiary,
   },
   createButtonText: {
     fontSize: 16,
     fontWeight: "600",
-    color: "#FFFFFF",
+    color: Colors.backgroundWhite,
   },
 });
 
