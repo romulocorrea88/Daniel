@@ -3,9 +3,24 @@ import { View, Text, StyleSheet, ScrollView, Pressable } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import { mockUser } from "../utils/mockData";
+import useAuthStore from "../state/authStore";
 
 const ProfileScreen = ({ navigation }) => {
   const insets = useSafeAreaInsets();
+  const { isGuest, user, logout } = useAuthStore();
+
+  const displayUser = isGuest 
+    ? { name: "Visitante", email: "Faça login para salvar seus dados" }
+    : (user || mockUser);
+
+  const handleLogout = () => {
+    logout();
+    // Could show a success message here
+  };
+
+  const handleLogin = () => {
+    navigation.navigate("Auth");
+  };
 
   const menuItems = [
     {
@@ -48,24 +63,34 @@ const ProfileScreen = ({ navigation }) => {
           <View style={styles.avatarContainer}>
             <Ionicons name="person" size={48} color="#FFFFFF" />
           </View>
-          <Text style={styles.userName}>{mockUser.name}</Text>
-          <Text style={styles.userEmail}>{mockUser.email}</Text>
+          <Text style={styles.userName}>{displayUser.name}</Text>
+          <Text style={styles.userEmail}>{displayUser.email}</Text>
           
-          <Pressable style={styles.editButton}>
-            <Text style={styles.editButtonText}>Editar Perfil</Text>
-          </Pressable>
+          {isGuest ? (
+            <Pressable 
+              style={styles.loginButton}
+              onPress={handleLogin}
+            >
+              <Text style={styles.loginButtonText}>Criar Conta / Entrar</Text>
+            </Pressable>
+          ) : (
+            <Pressable style={styles.editButton}>
+              <Text style={styles.editButtonText}>Editar Perfil</Text>
+            </Pressable>
+          )}
         </View>
 
         {/* Prayer Statistics */}
-        <View style={styles.statsSection}>
-          <Text style={styles.sectionTitle}>Estatísticas de Oração</Text>
-          
-          <View style={styles.statsGrid}>
-            <View style={styles.statCard}>
-              <Ionicons name="checkmark-circle" size={32} color="#10B981" />
-              <Text style={styles.statValue}>{mockUser.answeredPrayers}</Text>
-              <Text style={styles.statLabel}>Orações Respondidas</Text>
-            </View>
+        {!isGuest && (
+          <View style={styles.statsSection}>
+            <Text style={styles.sectionTitle}>Estatísticas de Oração</Text>
+            
+            <View style={styles.statsGrid}>
+              <View style={styles.statCard}>
+                <Ionicons name="checkmark-circle" size={32} color="#10B981" />
+                <Text style={styles.statValue}>{mockUser.answeredPrayers}</Text>
+                <Text style={styles.statLabel}>Orações Respondidas</Text>
+              </View>
 
             <View style={styles.statCard}>
               <Ionicons name="flame" size={32} color="#F59E0B" />
@@ -86,6 +111,7 @@ const ProfileScreen = ({ navigation }) => {
             </View>
           </View>
         </View>
+        )}
 
         {/* Menu Items */}
         <View style={styles.menuSection}>
@@ -112,10 +138,15 @@ const ProfileScreen = ({ navigation }) => {
         </View>
 
         {/* Logout Button */}
-        <Pressable style={styles.logoutButton}>
-          <Ionicons name="log-out-outline" size={20} color="#DC2626" />
-          <Text style={styles.logoutText}>Sair</Text>
-        </Pressable>
+        {!isGuest && (
+          <Pressable 
+            style={styles.logoutButton}
+            onPress={handleLogout}
+          >
+            <Ionicons name="log-out-outline" size={20} color="#DC2626" />
+            <Text style={styles.logoutText}>Sair</Text>
+          </Pressable>
+        )}
       </ScrollView>
     </View>
   );
@@ -169,6 +200,17 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: "600",
     color: "#DC2626",
+  },
+  loginButton: {
+    paddingHorizontal: 24,
+    paddingVertical: 12,
+    borderRadius: 20,
+    backgroundColor: "#DC2626",
+  },
+  loginButtonText: {
+    fontSize: 14,
+    fontWeight: "600",
+    color: "#FFFFFF",
   },
   statsSection: {
     paddingHorizontal: 20,

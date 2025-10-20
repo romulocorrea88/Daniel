@@ -3,19 +3,28 @@ import { View, Text, StyleSheet, ScrollView, Pressable } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import { mockMyPrayers } from "../utils/mockData";
+import CreatePrayerModal from "../components/CreatePrayerModal";
+import useAuthStore from "../state/authStore";
 
 const MyPrayersScreen = ({ navigation }) => {
   const insets = useSafeAreaInsets();
   const [filter, setFilter] = useState("all"); // all, active, answered
+  const [showCreateModal, setShowCreateModal] = useState(false);
+  const { isGuest, guestPrayers } = useAuthStore();
+
+  // Combine mock prayers with guest prayers for display
+  const allPrayers = isGuest 
+    ? [...guestPrayers, ...mockMyPrayers] 
+    : mockMyPrayers;
 
   const getFilteredPrayers = () => {
     if (filter === "answered") {
-      return mockMyPrayers.filter(p => p.isAnswered);
+      return allPrayers.filter(p => p.isAnswered);
     }
     if (filter === "active") {
-      return mockMyPrayers.filter(p => !p.isAnswered);
+      return allPrayers.filter(p => !p.isAnswered);
     }
-    return mockMyPrayers;
+    return allPrayers;
   };
 
   const getCategoryColor = (category) => {
@@ -32,7 +41,10 @@ const MyPrayersScreen = ({ navigation }) => {
     <View style={[styles.container, { paddingTop: insets.top }]}>
       <View style={styles.header}>
         <Text style={styles.headerTitle}>Meus Pedidos</Text>
-        <Pressable style={styles.addButton}>
+        <Pressable 
+          style={styles.addButton}
+          onPress={() => setShowCreateModal(true)}
+        >
           <Ionicons name="add-circle" size={32} color="#DC2626" />
         </Pressable>
       </View>
@@ -113,6 +125,12 @@ const MyPrayersScreen = ({ navigation }) => {
           </View>
         ))}
       </ScrollView>
+
+      <CreatePrayerModal 
+        visible={showCreateModal}
+        onClose={() => setShowCreateModal(false)}
+        navigation={navigation}
+      />
     </View>
   );
 };

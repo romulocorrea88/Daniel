@@ -5,6 +5,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Ionicons } from "@expo/vector-icons";
 
 import SplashScreen from "../screens/SplashScreen";
+import AuthScreen from "../screens/AuthScreen";
 import HomeScreen from "../screens/HomeScreen";
 import MyPrayersScreen from "../screens/MyPrayersScreen";
 import CommunityScreen from "../screens/CommunityScreen";
@@ -98,6 +99,14 @@ const RootNavigator = () => {
         <Stack.Screen 
           name="Main" 
           component={MainTabs}
+        />
+        <Stack.Screen 
+          name="Auth" 
+          component={AuthScreen}
+          options={{
+            presentation: "modal",
+            animation: "slide_from_bottom",
+          }}
         />
         <Stack.Screen 
           name="FocusMode" 

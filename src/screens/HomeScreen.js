@@ -5,9 +5,16 @@ import { Ionicons } from "@expo/vector-icons";
 import HomeMetricsPanel from "../components/HomeMetricsPanel";
 import PrayerItem from "../components/PrayerItem";
 import { mockUser, mockFriendsPrayers, mockDevotional } from "../utils/mockData";
+import useAuthStore from "../state/authStore";
 
 const HomeScreen = ({ navigation }) => {
   const insets = useSafeAreaInsets();
+  const { isGuest, user } = useAuthStore();
+
+  // Use guest name or authenticated user name
+  const displayName = isGuest ? "Visitante" : (user?.name || mockUser.name);
+  const displayAnsweredPrayers = isGuest ? 0 : mockUser.answeredPrayers;
+  const displayConsecutiveDays = isGuest ? 0 : mockUser.consecutiveDays;
 
   const handlePrayNow = () => {
     navigation.navigate("FocusMode");
@@ -28,9 +35,9 @@ const HomeScreen = ({ navigation }) => {
     >
       {/* 1. Metrics Panel - User greeting and badges */}
       <HomeMetricsPanel
-        userName={mockUser.name}
-        answeredPrayers={mockUser.answeredPrayers}
-        consecutiveDays={mockUser.consecutiveDays}
+        userName={displayName}
+        answeredPrayers={displayAnsweredPrayers}
+        consecutiveDays={displayConsecutiveDays}
       />
 
       {/* 2. Primary Action - Pray Now Button */}
