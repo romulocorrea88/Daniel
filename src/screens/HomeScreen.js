@@ -1,0 +1,194 @@
+import React from "react";
+import { View, Text, StyleSheet, ScrollView, Pressable } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { Ionicons } from "@expo/vector-icons";
+import HomeMetricsPanel from "../components/HomeMetricsPanel";
+import PrayerItem from "../components/PrayerItem";
+import { mockUser, mockFriendsPrayers, mockDevotional } from "../utils/mockData";
+
+const HomeScreen = ({ navigation }) => {
+  const insets = useSafeAreaInsets();
+
+  const handlePrayNow = () => {
+    navigation.navigate("FocusMode");
+  };
+
+  const handlePrayerItemPress = (prayer) => {
+    // Navigate to prayer detail in the future
+    console.log("Prayer pressed:", prayer);
+  };
+
+  return (
+    <ScrollView 
+      style={styles.container}
+      contentContainerStyle={[
+        styles.contentContainer,
+        { paddingBottom: insets.bottom + 20 }
+      ]}
+    >
+      {/* 1. Metrics Panel - User greeting and badges */}
+      <HomeMetricsPanel
+        userName={mockUser.name}
+        answeredPrayers={mockUser.answeredPrayers}
+        consecutiveDays={mockUser.consecutiveDays}
+      />
+
+      {/* 2. Primary Action - Pray Now Button */}
+      <View style={styles.actionContainer}>
+        <Pressable
+          style={({ pressed }) => [
+            styles.prayNowButton,
+            pressed && styles.prayNowButtonPressed
+          ]}
+          onPress={handlePrayNow}
+        >
+          <Ionicons name="prism" size={32} color="#FFFFFF" />
+          <Text style={styles.prayNowText}>ORAR AGORA</Text>
+        </Pressable>
+      </View>
+
+      {/* 3. Secondary Content - Friends' Prayers */}
+      <View style={styles.sectionContainer}>
+        <View style={styles.sectionHeader}>
+          <Ionicons name="people" size={24} color="#1F2937" />
+          <Text style={styles.sectionTitle}>Ore por seus amigos</Text>
+        </View>
+        
+        {mockFriendsPrayers.slice(0, 3).map((prayer) => (
+          <PrayerItem
+            key={prayer.id}
+            friendName={prayer.friendName}
+            prayerRequest={prayer.prayerRequest}
+            category={prayer.category}
+            onPress={() => handlePrayerItemPress(prayer)}
+          />
+        ))}
+
+        <Pressable 
+          style={styles.seeAllButton}
+          onPress={() => navigation.navigate("Community")}
+        >
+          <Text style={styles.seeAllText}>Ver todos os pedidos</Text>
+          <Ionicons name="arrow-forward" size={18} color="#DC2626" />
+        </Pressable>
+      </View>
+
+      {/* 4. Devotional Section */}
+      <View style={styles.devotionalContainer}>
+        <View style={styles.sectionHeader}>
+          <Ionicons name="book" size={24} color="#1F2937" />
+          <Text style={styles.sectionTitle}>Texto Bíblico do Dia</Text>
+        </View>
+        
+        <View style={styles.devotionalCard}>
+          <Text style={styles.verseText}>{mockDevotional.verse}</Text>
+          <Text style={styles.referenceText}>{mockDevotional.reference}</Text>
+          
+          <View style={styles.reflectionContainer}>
+            <Text style={styles.reflectionText}>{mockDevotional.reflection}</Text>
+          </View>
+        </View>
+      </View>
+    </ScrollView>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#F9FAFB",
+  },
+  contentContainer: {
+    paddingTop: 0,
+  },
+  actionContainer: {
+    paddingHorizontal: 20,
+    paddingVertical: 24,
+  },
+  prayNowButton: {
+    backgroundColor: "#DC2626",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    paddingVertical: 20,
+    borderRadius: 16,
+    gap: 12,
+    elevation: 4,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+  },
+  prayNowButtonPressed: {
+    backgroundColor: "#B91C1C",
+  },
+  prayNowText: {
+    fontSize: 20,
+    fontWeight: "bold",
+    color: "#FFFFFF",
+    letterSpacing: 1,
+  },
+  sectionContainer: {
+    paddingHorizontal: 20,
+    paddingVertical: 16,
+  },
+  sectionHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+    marginBottom: 16,
+  },
+  sectionTitle: {
+    fontSize: 20,
+    fontWeight: "bold",
+    color: "#1F2937",
+  },
+  seeAllButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 8,
+    paddingVertical: 12,
+  },
+  seeAllText: {
+    fontSize: 16,
+    fontWeight: "600",
+    color: "#DC2626",
+  },
+  devotionalContainer: {
+    paddingHorizontal: 20,
+    paddingVertical: 16,
+  },
+  devotionalCard: {
+    backgroundColor: "#FFFFFF",
+    borderRadius: 12,
+    padding: 20,
+    borderWidth: 1,
+    borderColor: "#E5E7EB",
+  },
+  verseText: {
+    fontSize: 18,
+    fontStyle: "italic",
+    color: "#1F2937",
+    lineHeight: 28,
+    marginBottom: 8,
+  },
+  referenceText: {
+    fontSize: 14,
+    fontWeight: "600",
+    color: "#DC2626",
+    marginBottom: 16,
+  },
+  reflectionContainer: {
+    paddingTop: 16,
+    borderTopWidth: 1,
+    borderTopColor: "#E5E7EB",
+  },
+  reflectionText: {
+    fontSize: 14,
+    color: "#6B7280",
+    lineHeight: 22,
+  },
+});
+
+export default HomeScreen;
