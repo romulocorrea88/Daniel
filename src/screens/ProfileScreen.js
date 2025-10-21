@@ -2,7 +2,6 @@ import React from "react";
 import { View, Text, StyleSheet, ScrollView, Pressable } from "react-native";
 import Colors from "../constants/Colors";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import Colors from "../constants/Colors";
 import { Ionicons } from "@expo/vector-icons";
 import { mockUser } from "../utils/mockData";
 import useAuthStore from "../state/authStore";
