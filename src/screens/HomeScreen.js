@@ -117,19 +117,19 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   prayNowButton: {
-    backgroundColor: Colors.primaryGreen,
+    backgroundColor: Colors.primaryGreenDark,
     width: "100%",
     maxWidth: 400,
     paddingVertical: 28,
     borderRadius: 20,
     elevation: 8,
-    shadowColor: Colors.primaryGreen,
+    shadowColor: Colors.primaryGreenDark,
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.4,
     shadowRadius: 8,
   },
   prayNowButtonPressed: {
-    backgroundColor: Colors.primaryGreenDark,
+    backgroundColor: "#0F4214",
     transform: [{ scale: 0.98 }],
   },
   prayNowContent: {
