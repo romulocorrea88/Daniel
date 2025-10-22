@@ -270,7 +270,7 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: "Colors.secondaryMintLight + "60"",
+    backgroundColor: Colors.secondaryMintLight + "60",
     justifyContent: "center",
     alignItems: "center",
     marginRight: 12,

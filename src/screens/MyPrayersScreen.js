@@ -35,7 +35,7 @@ const MyPrayersScreen = ({ navigation }) => {
       Família: Colors.categoryFamily,
       Pessoal: Colors.accentYellow,
     };
-    return colors[category] || "Colors.textSecondary;
+    return colors[category] || Colors.textSecondary;
   };
 
   return (

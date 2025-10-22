@@ -169,7 +169,7 @@ const styles = StyleSheet.create({
     width: 56,
     height: 56,
     borderRadius: 28,
-    backgroundColor: "Colors.secondaryMintLight + "60"",
+    backgroundColor: Colors.secondaryMintLight + "60",
     justifyContent: "center",
     alignItems: "center",
     marginRight: 12,

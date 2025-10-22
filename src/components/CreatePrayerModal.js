@@ -233,7 +233,7 @@ const styles = StyleSheet.create({
   guestNotice: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "Colors.secondaryMintLight + "60"",
+    backgroundColor: Colors.secondaryMintLight + "60",
     padding: 12,
     borderRadius: 12,
     gap: 8,
