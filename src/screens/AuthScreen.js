@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Text, StyleSheet, Pressable, TextInput, KeyboardAvoidingView, Platform, ScrollView } from "react-native";
+import { View, Text, StyleSheet, Pressable, TextInput, KeyboardAvoidingView, Platform, ScrollView, Linking } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import useAuthStore from "../state/authStore";
@@ -12,66 +12,53 @@ const AuthScreen = ({ navigation }) => {
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [errors, setErrors] = useState({ name: "", email: "" });
 
-  const handleSocialLogin = async (provider) => {
-    setIsLoading(true);
-    
-    try {
-      // Simulate social login - Replace with actual implementation
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      const mockUser = {
-        id: Math.random().toString(),
-        name: provider === "google" ? "Usuário Google" : "Usuário Apple",
-        email: `user@${provider}.com`,
-        provider: provider,
-      };
-
-      if (guestPrayers.length > 0) {
-        // Convert guest to user and sync prayers
-        const prayers = convertGuestToUser(mockUser);
-        console.log("Syncing guest prayers to backend:", prayers);
-      } else {
-        await login(provider, mockUser);
-      }
-      
-      navigation.replace("Main");
-    } catch (error) {
-      console.error("Social login error:", error);
-    } finally {
-      setIsLoading(false);
-    }
+  const validateEmail = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
   };
 
   const handleEmailSignup = async () => {
-    if (!email || !name) {
+    const newErrors = { name: "", email: "" };
+
+    if (!name.trim()) {
+      newErrors.name = "Por favor, digite seu nome";
+    }
+
+    if (!email.trim()) {
+      newErrors.email = "Por favor, digite seu email";
+    } else if (!validateEmail(email.trim())) {
+      newErrors.email = "Por favor, digite um email válido";
+    }
+
+    setErrors(newErrors);
+
+    if (newErrors.name || newErrors.email) {
       return;
     }
 
     setIsLoading(true);
     
     try {
-      // Simulate email signup - Replace with actual implementation
       await new Promise(resolve => setTimeout(resolve, 1000));
       
-      const mockUser = {
-        id: Math.random().toString(),
-        name: name,
-        email: email,
+      const newUser = {
+        id: Date.now().toString(),
+        name: name.trim(),
+        email: email.trim().toLowerCase(),
         provider: "email",
       };
 
       if (guestPrayers.length > 0) {
-        // Convert guest to user and sync prayers
-        const prayers = convertGuestToUser(mockUser);
-        console.log("Syncing guest prayers to backend:", prayers);
+        convertGuestToUser(newUser);
       } else {
-        await login("email", mockUser);
+        await login("email", newUser);
       }
       
       navigation.replace("Main");
     } catch (error) {
-      console.error("Email signup error:", error);
+      setErrors({ ...errors, email: "Erro ao criar conta. Tente novamente." });
     } finally {
       setIsLoading(false);
     }
@@ -121,65 +108,48 @@ const AuthScreen = ({ navigation }) => {
             </View>
           )}
 
-          {/* Social Login Buttons */}
-          <View style={styles.socialButtonsContainer}>
-            <Pressable
-              style={({ pressed }) => [
-                styles.socialButton,
-                styles.googleButton,
-                pressed && styles.socialButtonPressed,
-                isLoading && styles.buttonDisabled
-              ]}
-              onPress={() => handleSocialLogin("google")}
-              disabled={isLoading}
-            >
-              <Ionicons name="logo-google" size={24} color={Colors.primaryGreen} />
-              <Text style={styles.socialButtonText}>Continuar com Google</Text>
-            </Pressable>
-
-            {Platform.OS === "ios" && (
-              <Pressable
-                style={({ pressed }) => [
-                  styles.socialButton,
-                  styles.appleButton,
-                  pressed && styles.socialButtonPressed,
-                  isLoading && styles.buttonDisabled
-                ]}
-                onPress={() => handleSocialLogin("apple")}
-                disabled={isLoading}
-              >
-                <Ionicons name="logo-apple" size={24} color={Colors.backgroundWhite} />
-                <Text style={styles.appleButtonText}>Continuar com Apple</Text>
-              </Pressable>
-            )}
-          </View>
-
-          <View style={styles.divider}>
-            <View style={styles.dividerLine} />
-            <Text style={styles.dividerText}>ou</Text>
-            <View style={styles.dividerLine} />
-          </View>
-
-          {/* Email Signup */}
+          {/* Email Signup Form */}
           <View style={styles.emailForm}>
-            <TextInput
-              style={styles.input}
-              placeholder="Seu nome"
-              value={name}
-              onChangeText={setName}
-              autoCapitalize="words"
-              editable={!isLoading}
-            />
+            <View style={styles.inputContainer}>
+              <TextInput
+                style={[
+                  styles.input,
+                  errors.name && styles.inputError
+                ]}
+                placeholder="Seu nome"
+                value={name}
+                onChangeText={(text) => {
+                  setName(text);
+                  if (errors.name) setErrors({ ...errors, name: "" });
+                }}
+                autoCapitalize="words"
+                editable={!isLoading}
+              />
+              {errors.name ? (
+                <Text style={styles.errorText}>{errors.name}</Text>
+              ) : null}
+            </View>
             
-            <TextInput
-              style={styles.input}
-              placeholder="Seu email"
-              value={email}
-              onChangeText={setEmail}
-              keyboardType="email-address"
-              autoCapitalize="none"
-              editable={!isLoading}
-            />
+            <View style={styles.inputContainer}>
+              <TextInput
+                style={[
+                  styles.input,
+                  errors.email && styles.inputError
+                ]}
+                placeholder="Seu email"
+                value={email}
+                onChangeText={(text) => {
+                  setEmail(text);
+                  if (errors.email) setErrors({ ...errors, email: "" });
+                }}
+                keyboardType="email-address"
+                autoCapitalize="none"
+                editable={!isLoading}
+              />
+              {errors.email ? (
+                <Text style={styles.errorText}>{errors.email}</Text>
+              ) : null}
+            </View>
 
             <Pressable
               style={({ pressed }) => [
@@ -197,7 +167,20 @@ const AuthScreen = ({ navigation }) => {
           </View>
 
           <Text style={styles.termsText}>
-            Ao continuar, você concorda com nossos Termos de Uso e Política de Privacidade
+            Ao continuar, você concorda com nossos{" "}
+            <Text 
+              style={styles.termsLink}
+              onPress={() => Linking.openURL("https://exemplo.com/termos")}
+            >
+              Termos de Uso
+            </Text>
+            {" "}e{" "}
+            <Text 
+              style={styles.termsLink}
+              onPress={() => Linking.openURL("https://exemplo.com/privacidade")}
+            >
+              Política de Privacidade
+            </Text>
           </Text>
         </View>
       </ScrollView>
@@ -258,59 +241,13 @@ const styles = StyleSheet.create({
     color: "#1B5E20",
     lineHeight: 20,
   },
-  socialButtonsContainer: {
-    width: "100%",
-    gap: 12,
-  },
-  socialButton: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    paddingVertical: 14,
-    borderRadius: 12,
-    gap: 12,
-    borderWidth: 1,
-  },
-  googleButton: {
-    backgroundColor: Colors.backgroundWhite,
-    borderColor: Colors.border,
-  },
-  appleButton: {
-    backgroundColor: "#000000",
-    borderColor: "#000000",
-  },
-  socialButtonPressed: {
-    opacity: 0.7,
-  },
-  socialButtonText: {
-    fontSize: 16,
-    fontWeight: "600",
-    color: Colors.textPrimary,
-  },
-  appleButtonText: {
-    fontSize: 16,
-    fontWeight: "600",
-    color: Colors.backgroundWhite,
-  },
-  divider: {
-    flexDirection: "row",
-    alignItems: "center",
-    width: "100%",
-    marginVertical: 24,
-  },
-  dividerLine: {
-    flex: 1,
-    height: 1,
-    backgroundColor: Colors.border,
-  },
-  dividerText: {
-    fontSize: 14,
-    color: Colors.textTertiary,
-    marginHorizontal: 16,
-  },
   emailForm: {
     width: "100%",
-    gap: 12,
+    gap: 16,
+    marginTop: 8,
+  },
+  inputContainer: {
+    width: "100%",
   },
   input: {
     backgroundColor: Colors.background,
@@ -321,6 +258,16 @@ const styles = StyleSheet.create({
     paddingVertical: 14,
     fontSize: 16,
     color: Colors.textPrimary,
+  },
+  inputError: {
+    borderColor: Colors.error,
+    borderWidth: 2,
+  },
+  errorText: {
+    color: Colors.error,
+    fontSize: 12,
+    marginTop: 4,
+    marginLeft: 4,
   },
   emailButton: {
     backgroundColor: Colors.primaryGreen,
@@ -346,6 +293,11 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginTop: 24,
     lineHeight: 18,
+  },
+  termsLink: {
+    color: Colors.primaryGreen,
+    fontWeight: "600",
+    textDecorationLine: "underline",
   },
 });
 

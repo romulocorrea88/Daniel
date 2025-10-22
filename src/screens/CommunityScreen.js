@@ -10,7 +10,7 @@ const CommunityScreen = ({ navigation }) => {
   const insets = useSafeAreaInsets();
 
   const handlePrayerPress = (prayer) => {
-    console.log("Prayer selected:", prayer);
+    // Navigate to prayer detail
   };
 
   return (

@@ -23,7 +23,6 @@ const HomeScreen = ({ navigation }) => {
 
   const handlePrayerItemPress = (prayer) => {
     // Navigate to prayer detail in the future
-    console.log("Prayer pressed:", prayer);
   };
 
   return (

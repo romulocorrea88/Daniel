@@ -1,17 +1,49 @@
 {
   "expo": {
-    "name": "vibecode",
-    "slug": "vibecode",
-    "scheme": "vibecode",
+    "name": "Daniel - Oração",
+    "slug": "daniel-prayer-app",
+    "scheme": "danielprayer",
     "version": "1.0.0",
     "orientation": "portrait",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
+    "icon": "./assets/icon.png",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.danielprayer.app",
+      "infoPlist": {
+        "NSCameraUsageDescription": "Este app precisa acessar a câmera para que você possa adicionar fotos aos seus pedidos de oração.",
+        "NSPhotoLibraryUsageDescription": "Este app precisa acessar suas fotos para que você possa escolher imagens para seus pedidos de oração.",
+        "NSPhotoLibraryAddUsageDescription": "Este app precisa salvar fotos na sua biblioteca para compartilhar seus pedidos de oração.",
+        "NSMicrophoneUsageDescription": "Este app precisa acessar o microfone para que você possa gravar orações em áudio.",
+        "NSLocationWhenInUseUsageDescription": "Este app usa sua localização para encontrar comunidades de oração próximas a você.",
+        "NSCalendarsUsageDescription": "Este app precisa acessar seu calendário para adicionar lembretes de oração.",
+        "NSRemindersUsageDescription": "Este app precisa acessar seus lembretes para criar alertas de oração.",
+        "NSContactsUsageDescription": "Este app precisa acessar seus contatos para convidá-los a orar junto com você.",
+        "NSMotionUsageDescription": "Este app usa dados de movimento para detectar quando você está em oração."
+      }
     },
     "android": {
-      "edgeToEdgeEnabled": true
-    }
+      "edgeToEdgeEnabled": true,
+      "package": "com.danielprayer.app",
+      "permissions": [
+        "CAMERA",
+        "READ_EXTERNAL_STORAGE",
+        "WRITE_EXTERNAL_STORAGE",
+        "RECORD_AUDIO",
+        "ACCESS_FINE_LOCATION",
+        "ACCESS_COARSE_LOCATION",
+        "READ_CALENDAR",
+        "WRITE_CALENDAR",
+        "READ_CONTACTS"
+      ]
+    },
+    "description": "Daniel é seu companheiro de oração diário. Acompanhe seus pedidos, ore com amigos e fortaleça sua vida espiritual.",
+    "primaryColor": "#2E7D32"
   }
 }

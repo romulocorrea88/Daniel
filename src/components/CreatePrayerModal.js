@@ -10,11 +10,13 @@ const CreatePrayerModal = ({ visible, onClose, navigation }) => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState("Pessoal");
+  const [errorMessage, setErrorMessage] = useState("");
 
   const categories = ["Pessoal", "Trabalho", "Saúde", "Família", "Outros"];
 
   const handleCreatePrayer = () => {
     if (!title.trim()) {
+      setErrorMessage("Por favor, digite um título para seu pedido");
       return;
     }
 
@@ -28,19 +30,14 @@ const CreatePrayerModal = ({ visible, onClose, navigation }) => {
     };
 
     if (isGuest) {
-      // Add to guest prayers
       addGuestPrayer(newPrayer);
-      
-      // Close modal
       onClose();
       
-      // Redirect to auth screen
       setTimeout(() => {
         navigation.navigate("Auth");
       }, 300);
     } else {
-      // Save to backend (implement later)
-      console.log("Saving prayer to backend:", newPrayer);
+      // In production: Save to backend
       onClose();
     }
 
@@ -48,6 +45,7 @@ const CreatePrayerModal = ({ visible, onClose, navigation }) => {
     setTitle("");
     setDescription("");
     setCategory("Pessoal");
+    setErrorMessage("");
   };
 
   return (
@@ -78,12 +76,21 @@ const CreatePrayerModal = ({ visible, onClose, navigation }) => {
             <View style={styles.inputGroup}>
               <Text style={styles.label}>Título do Pedido</Text>
               <TextInput
-                style={styles.input}
+                style={[
+                  styles.input,
+                  errorMessage && styles.inputError
+                ]}
                 placeholder="Ex: Por paz no trabalho"
                 value={title}
-                onChangeText={setTitle}
+                onChangeText={(text) => {
+                  setTitle(text);
+                  if (errorMessage) setErrorMessage("");
+                }}
                 autoFocus
               />
+              {errorMessage ? (
+                <Text style={styles.errorText}>{errorMessage}</Text>
+              ) : null}
             </View>
 
             <View style={styles.inputGroup}>
@@ -200,6 +207,15 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     fontSize: 16,
     color: Colors.textPrimary,
+  },
+  inputError: {
+    borderColor: Colors.error,
+    borderWidth: 2,
+  },
+  errorText: {
+    color: Colors.error,
+    fontSize: 12,
+    marginTop: 4,
   },
   textArea: {
     minHeight: 100,

@@ -1,5 +1,5 @@
-import React from "react";
-import { View, Text, StyleSheet, ScrollView, Pressable } from "react-native";
+import React, { useState } from "react";
+import { View, Text, StyleSheet, ScrollView, Pressable, Modal, Alert } from "react-native";
 import Colors from "../constants/Colors";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
@@ -9,18 +9,57 @@ import useAuthStore from "../state/authStore";
 const ProfileScreen = ({ navigation }) => {
   const insets = useSafeAreaInsets();
   const { isGuest, user, logout } = useAuthStore();
+  const [showAboutModal, setShowAboutModal] = useState(false);
 
   const displayUser = isGuest 
     ? { name: "Visitante", email: "Faça login para salvar seus dados" }
     : (user || mockUser);
 
   const handleLogout = () => {
-    logout();
-    // Could show a success message here
+    Alert.alert(
+      "Sair da conta",
+      "Tem certeza que deseja sair?",
+      [
+        { text: "Cancelar", style: "cancel" },
+        { 
+          text: "Sair", 
+          style: "destructive",
+          onPress: () => logout()
+        }
+      ]
+    );
   };
 
   const handleLogin = () => {
     navigation.navigate("Auth");
+  };
+
+  const handleNotifications = () => {
+    Alert.alert(
+      "Notificações",
+      "Configure seus lembretes de oração diários. Esta funcionalidade será implementada em breve.",
+      [{ text: "OK" }]
+    );
+  };
+
+  const handleSettings = () => {
+    Alert.alert(
+      "Configurações",
+      "Personalize sua experiência no app. Esta funcionalidade será implementada em breve.",
+      [{ text: "OK" }]
+    );
+  };
+
+  const handleHelp = () => {
+    Alert.alert(
+      "Ajuda e Suporte",
+      "Precisa de ajuda? Entre em contato conosco:\n\nEmail: suporte@danielprayer.com\n\nEm breve: Central de ajuda completa.",
+      [{ text: "OK" }]
+    );
+  };
+
+  const handleAbout = () => {
+    setShowAboutModal(true);
   };
 
   const menuItems = [
@@ -29,24 +68,28 @@ const ProfileScreen = ({ navigation }) => {
       icon: "notifications-outline",
       title: "Notificações",
       subtitle: "Gerenciar lembretes de oração",
+      onPress: handleNotifications,
     },
     {
       id: 2,
       icon: "settings-outline",
       title: "Configurações",
       subtitle: "Preferências do aplicativo",
+      onPress: handleSettings,
     },
     {
       id: 3,
       icon: "help-circle-outline",
       title: "Ajuda e Suporte",
       subtitle: "Precisa de ajuda?",
+      onPress: handleHelp,
     },
     {
       id: 4,
       icon: "information-circle-outline",
       title: "Sobre",
       subtitle: "Versão 1.0.0",
+      onPress: handleAbout,
     },
   ];
 
@@ -123,6 +166,7 @@ const ProfileScreen = ({ navigation }) => {
                 styles.menuItem,
                 pressed && styles.menuItemPressed
               ]}
+              onPress={item.onPress}
             >
               <View style={styles.menuIconContainer}>
                 <Ionicons name={item.icon} size={24} color={Colors.primaryGreen} />
@@ -149,6 +193,54 @@ const ProfileScreen = ({ navigation }) => {
           </Pressable>
         )}
       </ScrollView>
+
+      {/* About Modal */}
+      <Modal
+        visible={showAboutModal}
+        animationType="slide"
+        presentationStyle="pageSheet"
+        onRequestClose={() => setShowAboutModal(false)}
+      >
+        <View style={styles.modalContainer}>
+          <View style={styles.modalHeader}>
+            <Text style={styles.modalTitle}>Sobre o Daniel</Text>
+            <Pressable onPress={() => setShowAboutModal(false)}>
+              <Ionicons name="close" size={28} color={Colors.textPrimary} />
+            </Pressable>
+          </View>
+
+          <ScrollView style={styles.modalContent}>
+            <View style={styles.aboutSection}>
+              <Ionicons name="prism-outline" size={60} color={Colors.primaryGreen} />
+              <Text style={styles.appName}>Daniel - Oração</Text>
+              <Text style={styles.appVersion}>Versão 1.0.0</Text>
+            </View>
+
+            <View style={styles.aboutDescription}>
+              <Text style={styles.descriptionText}>
+                Daniel é seu companheiro de oração diário. Acompanhe seus pedidos, 
+                ore com amigos e fortaleça sua vida espiritual.
+              </Text>
+
+              <Text style={styles.descriptionText}>
+                Inspirado no profeta Daniel, que mantinha uma vida de oração constante 
+                mesmo em meio às adversidades.
+              </Text>
+
+              <Text style={styles.sectionHeader}>Recursos:</Text>
+              <Text style={styles.featureText}>• Acompanhe seus pedidos de oração</Text>
+              <Text style={styles.featureText}>• Ore com amigos e comunidade</Text>
+              <Text style={styles.featureText}>• Estudos bíblicos diários</Text>
+              <Text style={styles.featureText}>• Modo foco para oração</Text>
+              <Text style={styles.featureText}>• Métricas de crescimento espiritual</Text>
+
+              <Text style={styles.copyrightText}>
+                © 2025 Daniel Prayer App. Todos os direitos reservados.
+              </Text>
+            </View>
+          </ScrollView>
+        </View>
+      </Modal>
     </View>
   );
 };
@@ -303,6 +395,72 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "600",
     color: Colors.primaryGreen,
+  },
+  modalContainer: {
+    flex: 1,
+    backgroundColor: Colors.backgroundWhite,
+  },
+  modalHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingHorizontal: 20,
+    paddingVertical: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: Colors.border,
+  },
+  modalTitle: {
+    fontSize: 20,
+    fontWeight: "bold",
+    color: Colors.textPrimary,
+  },
+  modalContent: {
+    flex: 1,
+  },
+  aboutSection: {
+    alignItems: "center",
+    paddingVertical: 32,
+    backgroundColor: Colors.background,
+  },
+  appName: {
+    fontSize: 24,
+    fontWeight: "bold",
+    color: Colors.textPrimary,
+    marginTop: 16,
+  },
+  appVersion: {
+    fontSize: 14,
+    color: Colors.textSecondary,
+    marginTop: 4,
+  },
+  aboutDescription: {
+    padding: 20,
+  },
+  descriptionText: {
+    fontSize: 16,
+    color: Colors.textSecondary,
+    lineHeight: 24,
+    marginBottom: 16,
+  },
+  sectionHeader: {
+    fontSize: 18,
+    fontWeight: "bold",
+    color: Colors.textPrimary,
+    marginTop: 24,
+    marginBottom: 12,
+  },
+  featureText: {
+    fontSize: 15,
+    color: Colors.textSecondary,
+    lineHeight: 28,
+    marginLeft: 8,
+  },
+  copyrightText: {
+    fontSize: 12,
+    color: Colors.textTertiary,
+    textAlign: "center",
+    marginTop: 32,
+    marginBottom: 16,
   },
 });
 
