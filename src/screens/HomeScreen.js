@@ -45,13 +45,24 @@ const HomeScreen = ({ navigation }) => {
       <View style={styles.actionContainer}>
         <Pressable
           style={({ pressed }) => [
-            styles.prayNowButton,
-            pressed && styles.prayNowButtonPressed
+            {
+              backgroundColor: pressed ? "#0F4214" : "#1B5E20",
+              width: "100%",
+              maxWidth: 400,
+              paddingVertical: 28,
+              borderRadius: 20,
+              elevation: 8,
+              shadowColor: "#1B5E20",
+              shadowOffset: { width: 0, height: 4 },
+              shadowOpacity: 0.4,
+              shadowRadius: 8,
+              transform: pressed ? [{ scale: 0.98 }] : [{ scale: 1 }],
+            }
           ]}
           onPress={handlePrayNow}
         >
           <View style={styles.prayNowContent}>
-            <Ionicons name="prism" size={40} color={Colors.textWhite} />
+            <Ionicons name="prism" size={40} color="#FFFFFF" />
             <Text style={styles.prayNowText}>Orar Agora</Text>
           </View>
         </Pressable>
