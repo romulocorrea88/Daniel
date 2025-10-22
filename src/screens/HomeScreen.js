@@ -50,8 +50,10 @@ const HomeScreen = ({ navigation }) => {
           ]}
           onPress={handlePrayNow}
         >
-          <Ionicons name="prism" size={32} color={Colors.textWhite} />
-          <Text style={styles.prayNowText}>ORAR AGORA</Text>
+          <View style={styles.prayNowContent}>
+            <Ionicons name="prism" size={40} color={Colors.textWhite} />
+            <Text style={styles.prayNowText}>Orar Agora</Text>
+          </View>
         </Pressable>
       </View>
 
@@ -111,30 +113,36 @@ const styles = StyleSheet.create({
   },
   actionContainer: {
     paddingHorizontal: 20,
-    paddingVertical: 24,
+    paddingVertical: 32,
+    alignItems: "center",
   },
   prayNowButton: {
     backgroundColor: Colors.primaryGreen,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    paddingVertical: 20,
-    borderRadius: 16,
-    gap: 12,
-    elevation: 4,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
+    width: "100%",
+    maxWidth: 400,
+    paddingVertical: 28,
+    borderRadius: 20,
+    elevation: 8,
+    shadowColor: Colors.primaryGreen,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.4,
+    shadowRadius: 8,
   },
   prayNowButtonPressed: {
     backgroundColor: Colors.primaryGreenDark,
+    transform: [{ scale: 0.98 }],
+  },
+  prayNowContent: {
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 12,
   },
   prayNowText: {
-    fontSize: 20,
+    fontSize: 24,
     fontWeight: "bold",
     color: Colors.textWhite,
-    letterSpacing: 1,
+    letterSpacing: 0.5,
   },
   sectionContainer: {
     paddingHorizontal: 20,
