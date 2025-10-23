@@ -1,8 +1,55 @@
-import React, { useState, useEffect } from "react";
-import { View, Text, StyleSheet, Pressable, ScrollView, TextInput } from "react-native";
+import React, { useState, useEffect, useCallback, useMemo } from "react";
+import { View, Text, StyleSheet, ScrollView, TextInput, LayoutAnimation, UIManager, Platform } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { activateKeepAwakeAsync, deactivateKeepAwake } from "expo-keep-awake";
+import Animated, { FadeIn, FadeInDown, SlideInRight, SlideOutLeft, FadeOut } from "react-native-reanimated";
+import HapticPressable from "../components/HapticPressable";
+import useHaptics from "../utils/useHaptics";
 import Colors from "../constants/Colors";
+
+// Enable LayoutAnimation for Android
+if (Platform.OS === "android" && UIManager.setLayoutAnimationEnabledExperimental) {
+  UIManager.setLayoutAnimationEnabledExperimental(true);
+}
+
+const ACTS_STEPS = [
+  {
+    id: "adoration",
+    title: "Adoração",
+    subtitle: "Louve a Deus por quem Ele é",
+    icon: "star",
+    color: "#FFD700",
+    description: "Reconheça os atributos de Deus: Sua bondade, poder, amor e majestade.",
+    placeholder: "Ex: Senhor, Tu és maravilhoso, fiel e digno de toda adoração..."
+  },
+  {
+    id: "confession",
+    title: "Confissão",
+    subtitle: "Peça perdão e reconheça suas falhas",
+    icon: "heart-dislike",
+    color: "#EF5350",
+    description: "Confesse seus pecados e peça perdão, buscando purificação.",
+    placeholder: "Ex: Pai, confesso que falhei em... Perdoa-me e purifica meu coração..."
+  },
+  {
+    id: "thanksgiving",
+    title: "Ação de Graças",
+    subtitle: "Agradeça pelas bênçãos recebidas",
+    icon: "gift",
+    color: "#4CAF50",
+    description: "Expresse gratidão por todas as bênçãos, grandes e pequenas.",
+    placeholder: "Ex: Obrigado Senhor por minha família, saúde, trabalho..."
+  },
+  {
+    id: "supplication",
+    title: "Súplica",
+    subtitle: "Apresente seus pedidos a Deus",
+    icon: "hand-right",
+    color: "#2196F3",
+    description: "Traga seus pedidos pessoais e interceda por outras pessoas.",
+    placeholder: "Ex: Senhor, peço por sabedoria em..., oro por meus amigos..."
+  }
+];
 
 const PrayerModeScreen = ({ navigation }) => {
   const [currentStep, setCurrentStep] = useState(0);
@@ -14,50 +61,11 @@ const PrayerModeScreen = ({ navigation }) => {
     thanksgiving: "",
     supplication: ""
   });
-
-  const actsSteps = [
-    {
-      id: "adoration",
-      title: "Adoração",
-      subtitle: "Louve a Deus por quem Ele é",
-      icon: "star",
-      color: "#FFD700",
-      description: "Reconheça os atributos de Deus: Sua bondade, poder, amor e majestade.",
-      placeholder: "Ex: Senhor, Tu és maravilhoso, fiel e digno de toda adoração..."
-    },
-    {
-      id: "confession",
-      title: "Confissão",
-      subtitle: "Peça perdão e reconheça suas falhas",
-      icon: "heart-dislike",
-      color: "#EF5350",
-      description: "Confesse seus pecados e peça perdão, buscando purificação.",
-      placeholder: "Ex: Pai, confesso que falhei em... Perdoa-me e purifica meu coração..."
-    },
-    {
-      id: "thanksgiving",
-      title: "Ação de Graças",
-      subtitle: "Agradeça pelas bênçãos recebidas",
-      icon: "gift",
-      color: "#4CAF50",
-      description: "Expresse gratidão por todas as bênçãos, grandes e pequenas.",
-      placeholder: "Ex: Obrigado Senhor por minha família, saúde, trabalho..."
-    },
-    {
-      id: "supplication",
-      title: "Súplica",
-      subtitle: "Apresente seus pedidos a Deus",
-      icon: "hand-right",
-      color: "#2196F3",
-      description: "Traga seus pedidos pessoais e interceda por outras pessoas.",
-      placeholder: "Ex: Senhor, peço por sabedoria em..., oro por meus amigos..."
-    }
-  ];
+  
+  const haptics = useHaptics();
 
   useEffect(() => {
-    // Activate keep awake when component mounts
     activateKeepAwakeAsync();
-    
     return () => {
       deactivateKeepAwake();
     };
@@ -65,7 +73,6 @@ const PrayerModeScreen = ({ navigation }) => {
 
   useEffect(() => {
     let interval = null;
-
     if (isActive) {
       interval = setInterval(() => {
         setSeconds((s) => s + 1);
@@ -73,7 +80,6 @@ const PrayerModeScreen = ({ navigation }) => {
     } else {
       if (interval) clearInterval(interval);
     }
-
     return () => {
       if (interval) clearInterval(interval);
     };
@@ -85,29 +91,36 @@ const PrayerModeScreen = ({ navigation }) => {
     }
   }, [currentStep]);
 
-  const formatTime = (totalSeconds) => {
+  const formatTime = useCallback((totalSeconds) => {
     const minutes = Math.floor(totalSeconds / 60);
     const secs = totalSeconds % 60;
     return `${minutes.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
-  };
+  }, []);
 
-  const handleNext = () => {
-    if (currentStep < actsSteps.length - 1) {
+  const handleNext = useCallback(() => {
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+    
+    if (currentStep < ACTS_STEPS.length - 1) {
       setCurrentStep(currentStep + 1);
+      haptics.medium();
     } else {
       handleFinish();
     }
-  };
+  }, [currentStep, haptics]);
 
-  const handlePrevious = () => {
+  const handlePrevious = useCallback(() => {
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+    
     if (currentStep > 0) {
       setCurrentStep(currentStep - 1);
+      haptics.light();
     }
-  };
+  }, [currentStep, haptics]);
 
-  const handleFinish = () => {
+  const handleFinish = useCallback(() => {
     setIsActive(false);
-    // In production: Save prayer session to backend with time and notes
+    haptics.success();
+    
     const prayerData = {
       duration: seconds,
       date: new Date().toISOString(),
@@ -115,33 +128,48 @@ const PrayerModeScreen = ({ navigation }) => {
     };
     
     navigation.goBack();
-  };
+  }, [seconds, notes, navigation, haptics]);
 
-  const handleClose = () => {
+  const handleClose = useCallback(() => {
     setIsActive(false);
+    haptics.light();
     navigation.goBack();
-  };
+  }, [navigation, haptics]);
 
-  const currentStepData = actsSteps[currentStep];
-  const progress = ((currentStep + 1) / actsSteps.length) * 100;
+  const handleNoteChange = useCallback((stepId, text) => {
+    setNotes(prev => ({ ...prev, [stepId]: text }));
+  }, []);
+
+  const currentStepData = useMemo(() => ACTS_STEPS[currentStep], [currentStep]);
+  const progress = useMemo(() => ((currentStep + 1) / ACTS_STEPS.length) * 100, [currentStep]);
 
   return (
-    <View style={styles.container}>
+    <Animated.View 
+      style={styles.container}
+      entering={FadeIn.duration(300)}
+      exiting={FadeOut.duration(200)}
+    >
       {/* Header */}
-      <View style={styles.header}>
-        <Pressable onPress={handleClose} style={styles.closeButton}>
+      <Animated.View 
+        style={styles.header}
+        entering={FadeInDown.delay(100).duration(400)}
+      >
+        <HapticPressable onPress={handleClose} style={styles.closeButton} hapticType="light">
           <Ionicons name="close" size={28} color={Colors.backgroundWhite} />
-        </Pressable>
+        </HapticPressable>
         
         <View style={styles.timerDisplay}>
           <Ionicons name="time-outline" size={20} color={Colors.backgroundWhite} />
           <Text style={styles.timerText}>{formatTime(seconds)}</Text>
         </View>
-      </View>
+      </Animated.View>
 
       {/* Progress Bar */}
       <View style={styles.progressBarContainer}>
-        <View style={[styles.progressBar, { width: `${progress}%` }]} />
+        <Animated.View 
+          style={[styles.progressBar, { width: `${progress}%` }]}
+          entering={FadeIn.duration(300)}
+        />
       </View>
 
       {/* Content */}
@@ -149,23 +177,32 @@ const PrayerModeScreen = ({ navigation }) => {
         style={styles.content}
         contentContainerStyle={styles.contentContainer}
         keyboardShouldPersistTaps="handled"
+        showsVerticalScrollIndicator={false}
       >
-        <View style={styles.stepIndicator}>
+        <Animated.View 
+          key={currentStep}
+          entering={SlideInRight.duration(300).springify()}
+          exiting={SlideOutLeft.duration(200)}
+          style={styles.stepIndicator}
+        >
           <View style={[styles.iconContainer, { backgroundColor: currentStepData.color + "20" }]}>
             <Ionicons name={currentStepData.icon} size={48} color={currentStepData.color} />
           </View>
           
           <Text style={styles.stepNumber}>
-            Passo {currentStep + 1} de {actsSteps.length}
+            Passo {currentStep + 1} de {ACTS_STEPS.length}
           </Text>
           
           <Text style={styles.stepTitle}>{currentStepData.title}</Text>
           <Text style={styles.stepSubtitle}>{currentStepData.subtitle}</Text>
-        </View>
+        </Animated.View>
 
-        <View style={styles.descriptionCard}>
+        <Animated.View 
+          entering={FadeIn.delay(200).duration(400)}
+          style={styles.descriptionCard}
+        >
           <Text style={styles.descriptionText}>{currentStepData.description}</Text>
-        </View>
+        </Animated.View>
 
         <View style={styles.notesSection}>
           <Text style={styles.notesLabel}>Suas Anotações (opcional)</Text>
@@ -174,7 +211,7 @@ const PrayerModeScreen = ({ navigation }) => {
             placeholder={currentStepData.placeholder}
             placeholderTextColor="#9E9E9E"
             value={notes[currentStepData.id]}
-            onChangeText={(text) => setNotes({ ...notes, [currentStepData.id]: text })}
+            onChangeText={(text) => handleNoteChange(currentStepData.id, text)}
             multiline
             numberOfLines={6}
             textAlignVertical="top"
@@ -183,48 +220,54 @@ const PrayerModeScreen = ({ navigation }) => {
 
         {/* Navigation Dots */}
         <View style={styles.dotsContainer}>
-          {actsSteps.map((step, index) => (
-            <View
+          {ACTS_STEPS.map((step, index) => (
+            <Animated.View
               key={step.id}
               style={[
                 styles.dot,
                 index === currentStep && styles.dotActive,
                 { backgroundColor: index === currentStep ? step.color : "#444" }
               ]}
+              entering={FadeIn.delay(index * 50)}
             />
           ))}
         </View>
       </ScrollView>
 
       {/* Bottom Navigation */}
-      <View style={styles.bottomNav}>
+      <Animated.View 
+        style={styles.bottomNav}
+        entering={FadeInDown.delay(300).duration(400)}
+      >
         {currentStep > 0 && (
-          <Pressable
+          <HapticPressable
             style={[styles.navButton, styles.navButtonSecondary]}
             onPress={handlePrevious}
+            hapticType="light"
           >
             <Ionicons name="arrow-back" size={24} color={Colors.backgroundWhite} />
             <Text style={styles.navButtonText}>Anterior</Text>
-          </Pressable>
+          </HapticPressable>
         )}
 
-        <Pressable
+        <HapticPressable
           style={[
             styles.navButton,
             styles.navButtonPrimary,
             currentStep === 0 && styles.navButtonFull
           ]}
           onPress={handleNext}
+          hapticType={currentStep === ACTS_STEPS.length - 1 ? "success" : "medium"}
         >
           <Text style={styles.navButtonTextPrimary}>
-            {currentStep === actsSteps.length - 1 ? "Finalizar" : "Próximo"}
+            {currentStep === ACTS_STEPS.length - 1 ? "Finalizar" : "Próximo"}
           </Text>
-          {currentStep < actsSteps.length - 1 && (
+          {currentStep < ACTS_STEPS.length - 1 && (
             <Ionicons name="arrow-forward" size={24} color={Colors.backgroundWhite} />
           )}
-        </Pressable>
-      </View>
-    </View>
+        </HapticPressable>
+      </Animated.View>
+    </Animated.View>
   );
 };
 

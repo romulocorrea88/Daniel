@@ -1,40 +1,56 @@
-import React, { useState } from "react";
-import { View, Text, StyleSheet, ScrollView, Pressable, Modal } from "react-native";
+import React, { useState, useCallback, useMemo } from "react";
+import { View, Text, StyleSheet, ScrollView, Modal } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
+import Animated, { FadeIn, FadeInDown } from "react-native-reanimated";
 import HomeMetricsPanel from "../components/HomeMetricsPanel";
 import PrayerTimeChart from "../components/PrayerTimeChart";
+import HapticPressable from "../components/HapticPressable";
 import { mockUser, mockDevotional } from "../utils/mockData";
 import useAuthStore from "../state/authStore";
+import useHaptics from "../utils/useHaptics";
 import Colors from "../constants/Colors";
 
 const HomeScreen = ({ navigation }) => {
   const insets = useSafeAreaInsets();
   const { isGuest, user } = useAuthStore();
   const [showCalendarModal, setShowCalendarModal] = useState(false);
+  const haptics = useHaptics();
 
   // Use guest name or authenticated user name
-  const displayName = isGuest ? "Visitante" : (user?.name || mockUser.name);
-  const displayAnsweredPrayers = isGuest ? 0 : mockUser.answeredPrayers;
-  const displayConsecutiveDays = isGuest ? 0 : mockUser.consecutiveDays;
+  const displayName = useMemo(() => 
+    isGuest ? "Visitante" : (user?.name || mockUser.name),
+    [isGuest, user]
+  );
+  const displayAnsweredPrayers = useMemo(() => 
+    isGuest ? 0 : mockUser.answeredPrayers,
+    [isGuest]
+  );
+  const displayConsecutiveDays = useMemo(() => 
+    isGuest ? 0 : mockUser.consecutiveDays,
+    [isGuest]
+  );
 
-  const handlePrayNow = () => {
+  const handlePrayNow = useCallback(() => {
+    haptics.medium();
     navigation.navigate("FocusMode");
-  };
+  }, [navigation, haptics]);
 
-  const handleAnsweredPrayersPress = () => {
+  const handleAnsweredPrayersPress = useCallback(() => {
+    haptics.light();
     navigation.navigate("MyPrayers", { filter: "answered" });
-  };
+  }, [navigation, haptics]);
 
-  const handleConsecutiveDaysPress = () => {
+  const handleConsecutiveDaysPress = useCallback(() => {
+    haptics.light();
     setShowCalendarModal(true);
-  };
+  }, [haptics]);
 
   // Mock prayer days data - In production, fetch from backend
-  const generatePrayerDays = () => {
+  const prayerDays = useMemo(() => {
     const days = [];
     const today = new Date();
-    const mockTimes = [20, 15, 18, 22, 25, 12, 30]; // Mock prayer times in minutes
+    const mockTimes = [20, 15, 18, 22, 25, 12, 30];
     
     for (let i = 0; i < displayConsecutiveDays; i++) {
       const date = new Date(today);
@@ -45,50 +61,57 @@ const HomeScreen = ({ navigation }) => {
       });
     }
     return days;
-  };
-
-  const prayerDays = generatePrayerDays();
+  }, [displayConsecutiveDays]);
 
   return (
     <>
-    <ScrollView 
+    <Animated.ScrollView 
       style={styles.container}
       contentContainerStyle={[
         styles.contentContainer,
         { paddingBottom: insets.bottom + 20 }
       ]}
+      entering={FadeIn.duration(300)}
+      showsVerticalScrollIndicator={false}
     >
       {/* 1. Metrics Panel - User greeting and badges */}
-      <HomeMetricsPanel
-        userName={displayName}
-        answeredPrayers={displayAnsweredPrayers}
-        consecutiveDays={displayConsecutiveDays}
-        onAnsweredPrayersPress={handleAnsweredPrayersPress}
-        onConsecutiveDaysPress={handleConsecutiveDaysPress}
-      />
+      <Animated.View entering={FadeInDown.delay(100).duration(400)}>
+        <HomeMetricsPanel
+          userName={displayName}
+          answeredPrayers={displayAnsweredPrayers}
+          consecutiveDays={displayConsecutiveDays}
+          onAnsweredPrayersPress={handleAnsweredPrayersPress}
+          onConsecutiveDaysPress={handleConsecutiveDaysPress}
+        />
+      </Animated.View>
 
       {/* 2. Primary Action - Pray Now Button */}
-      <View style={styles.actionContainer}>
-        <Pressable
-          style={({ pressed }) => [
-            styles.prayNowButton,
-            pressed && styles.prayNowButtonPressed
-          ]}
+      <Animated.View 
+        style={styles.actionContainer}
+        entering={FadeInDown.delay(200).duration(400)}
+      >
+        <HapticPressable
+          style={styles.prayNowButton}
           onPress={handlePrayNow}
+          hapticType="heavy"
+          scaleValue={0.97}
         >
           <View style={styles.prayNowContent}>
             <Ionicons name="prism" size={48} color="#FFFFFF" />
             <Text style={styles.prayNowText}>Orar Agora</Text>
             <Text style={styles.prayNowSubtext}>Método ACTS</Text>
           </View>
-        </Pressable>
-      </View>
+        </HapticPressable>
+      </Animated.View>
 
       {/* 3. Prayer Time Chart */}
-      <PrayerTimeChart />
+      <Animated.View entering={FadeInDown.delay(300).duration(400)}>
+        <PrayerTimeChart />
+      </Animated.View>
 
       {/* 4. Devotional Section */}
-      <View style={styles.devotionalContainer}>
+      <Animated.View entering={FadeInDown.delay(400).duration(400)}>
+        <View style={styles.devotionalContainer}>
         <View style={styles.sectionHeader}>
           <Ionicons name="book" size={24} color={Colors.textPrimary} />
           <Text style={styles.sectionTitle}>Texto Bíblico do Dia</Text>
@@ -100,10 +123,11 @@ const HomeScreen = ({ navigation }) => {
           
           <View style={styles.reflectionContainer}>
           <Text style={styles.reflectionText}>{mockDevotional.reflection}</Text>
+          </View>
         </View>
       </View>
-    </View>
-    </ScrollView>
+      </Animated.View>
+    </Animated.ScrollView>
 
     {/* Calendar Modal */}
     <Modal
@@ -112,12 +136,18 @@ const HomeScreen = ({ navigation }) => {
       presentationStyle="pageSheet"
       onRequestClose={() => setShowCalendarModal(false)}
     >
-      <View style={styles.modalContainer}>
+      <Animated.View 
+        style={styles.modalContainer}
+        entering={FadeIn.duration(300)}
+      >
         <View style={styles.modalHeader}>
           <Text style={styles.modalTitle}>Dias de Oração 🔥</Text>
-          <Pressable onPress={() => setShowCalendarModal(false)}>
+          <HapticPressable 
+            onPress={() => setShowCalendarModal(false)}
+            hapticType="light"
+          >
             <Ionicons name="close" size={28} color={Colors.textPrimary} />
-          </Pressable>
+          </HapticPressable>
         </View>
 
         <ScrollView style={styles.modalContent}>
@@ -158,7 +188,7 @@ const HomeScreen = ({ navigation }) => {
             ))}
           </View>
         </ScrollView>
-      </View>
+      </Animated.View>
     </Modal>
   </>
   );
@@ -190,11 +220,6 @@ const styles = StyleSheet.create({
     shadowRadius: 12,
     borderWidth: 2,
     borderColor: "#2E7D32",
-  },
-  prayNowButtonPressed: {
-    backgroundColor: "#0F4214",
-    transform: [{ scale: 0.97 }],
-    elevation: 8,
   },
   prayNowContent: {
     flexDirection: "column",
