@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { View, Text, StyleSheet, ScrollView, Pressable } from "react-native";
+import React, { useState, useEffect } from "react";
+import { View, Text, StyleSheet, ScrollView, Pressable, Modal, Alert } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import { mockMyPrayers } from "../utils/mockData";
@@ -7,11 +7,20 @@ import CreatePrayerModal from "../components/CreatePrayerModal";
 import useAuthStore from "../state/authStore";
 import Colors from "../constants/Colors";
 
-const MyPrayersScreen = ({ navigation }) => {
+const MyPrayersScreen = ({ navigation, route }) => {
   const insets = useSafeAreaInsets();
-  const [filter, setFilter] = useState("all"); // all, active, answered
+  const initialFilter = route?.params?.filter || "all";
+  const [filter, setFilter] = useState(initialFilter);
   const [showCreateModal, setShowCreateModal] = useState(false);
+  const [selectedPrayer, setSelectedPrayer] = useState(null);
+  const [showActionModal, setShowActionModal] = useState(false);
   const { isGuest, guestPrayers } = useAuthStore();
+
+  useEffect(() => {
+    if (route?.params?.filter) {
+      setFilter(route.params.filter);
+    }
+  }, [route?.params?.filter]);
 
   // Combine mock prayers with guest prayers for display
   const allPrayers = isGuest 
@@ -36,6 +45,39 @@ const MyPrayersScreen = ({ navigation }) => {
       Pessoal: Colors.accentYellow,
     };
     return colors[category] || Colors.textSecondary;
+  };
+
+  const handlePrayerAction = (prayer) => {
+    setSelectedPrayer(prayer);
+    setShowActionModal(true);
+  };
+
+  const handleMarkAsAnswered = () => {
+    Alert.alert(
+      "Oração Respondida! 🙏",
+      "Sua oração foi marcada como respondida. Glória a Deus!",
+      [{ text: "Amém", style: "default" }]
+    );
+    setShowActionModal(false);
+    // In production: Update prayer status in backend
+  };
+
+  const handleDelete = () => {
+    Alert.alert(
+      "Excluir Pedido",
+      "Tem certeza que deseja excluir este pedido de oração?",
+      [
+        { text: "Cancelar", style: "cancel" },
+        {
+          text: "Excluir",
+          style: "destructive",
+          onPress: () => {
+            setShowActionModal(false);
+            // In production: Delete from backend
+          }
+        }
+      ]
+    );
   };
 
   return (
@@ -119,7 +161,10 @@ const MyPrayersScreen = ({ navigation }) => {
                 </Text>
               </View>
 
-              <Pressable style={styles.menuButton}>
+              <Pressable 
+                style={styles.menuButton}
+                onPress={() => handlePrayerAction(prayer)}
+              >
                 <Ionicons name="ellipsis-horizontal" size={20} color={Colors.textSecondary} />
               </Pressable>
             </View>
@@ -132,6 +177,61 @@ const MyPrayersScreen = ({ navigation }) => {
         onClose={() => setShowCreateModal(false)}
         navigation={navigation}
       />
+
+      {/* Action Modal */}
+      <Modal
+        visible={showActionModal}
+        transparent={true}
+        animationType="fade"
+        onRequestClose={() => setShowActionModal(false)}
+      >
+        <Pressable 
+          style={styles.modalOverlay}
+          onPress={() => setShowActionModal(false)}
+        >
+          <View style={styles.actionModal}>
+            <Text style={styles.actionModalTitle}>
+              {selectedPrayer?.title}
+            </Text>
+
+            {!selectedPrayer?.isAnswered && (
+              <Pressable
+                style={styles.actionButton}
+                onPress={handleMarkAsAnswered}
+              >
+                <Ionicons name="checkmark-circle-outline" size={24} color={Colors.success} />
+                <Text style={styles.actionButtonText}>Marcar como Respondida</Text>
+              </Pressable>
+            )}
+
+            <Pressable
+              style={styles.actionButton}
+              onPress={() => {
+                setShowActionModal(false);
+                // Edit functionality
+              }}
+            >
+              <Ionicons name="create-outline" size={24} color={Colors.primaryGreen} />
+              <Text style={styles.actionButtonText}>Editar</Text>
+            </Pressable>
+
+            <Pressable
+              style={styles.actionButton}
+              onPress={handleDelete}
+            >
+              <Ionicons name="trash-outline" size={24} color={Colors.error} />
+              <Text style={[styles.actionButtonText, { color: Colors.error }]}>Excluir</Text>
+            </Pressable>
+
+            <Pressable
+              style={[styles.actionButton, styles.cancelButton]}
+              onPress={() => setShowActionModal(false)}
+            >
+              <Text style={styles.cancelButtonText}>Cancelar</Text>
+            </Pressable>
+          </View>
+        </Pressable>
+      </Modal>
     </View>
   );
 };
@@ -238,6 +338,53 @@ const styles = StyleSheet.create({
   },
   menuButton: {
     padding: 4,
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    justifyContent: "flex-end",
+  },
+  actionModal: {
+    backgroundColor: Colors.backgroundWhite,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    padding: 20,
+    paddingBottom: 40,
+  },
+  actionModalTitle: {
+    fontSize: 18,
+    fontWeight: "bold",
+    color: Colors.textPrimary,
+    marginBottom: 20,
+    textAlign: "center",
+  },
+  actionButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingVertical: 16,
+    paddingHorizontal: 16,
+    borderRadius: 12,
+    backgroundColor: Colors.background,
+    marginBottom: 12,
+    gap: 12,
+  },
+  actionButtonText: {
+    fontSize: 16,
+    fontWeight: "600",
+    color: Colors.textPrimary,
+  },
+  cancelButton: {
+    backgroundColor: Colors.backgroundWhite,
+    borderWidth: 1,
+    borderColor: Colors.border,
+    marginTop: 8,
+  },
+  cancelButtonText: {
+    fontSize: 16,
+    fontWeight: "600",
+    color: Colors.textSecondary,
+    textAlign: "center",
+    flex: 1,
   },
 });
 

@@ -1,5 +1,5 @@
-import React from "react";
-import { View, Text, StyleSheet, ScrollView, Pressable } from "react-native";
+import React, { useState } from "react";
+import { View, Text, StyleSheet, ScrollView, Pressable, Modal } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import HomeMetricsPanel from "../components/HomeMetricsPanel";
@@ -11,6 +11,7 @@ import Colors from "../constants/Colors";
 const HomeScreen = ({ navigation }) => {
   const insets = useSafeAreaInsets();
   const { isGuest, user } = useAuthStore();
+  const [showCalendarModal, setShowCalendarModal] = useState(false);
 
   // Use guest name or authenticated user name
   const displayName = isGuest ? "Visitante" : (user?.name || mockUser.name);
@@ -25,7 +26,30 @@ const HomeScreen = ({ navigation }) => {
     // Navigate to prayer detail in the future
   };
 
+  const handleAnsweredPrayersPress = () => {
+    navigation.navigate("MyPrayers", { filter: "answered" });
+  };
+
+  const handleConsecutiveDaysPress = () => {
+    setShowCalendarModal(true);
+  };
+
+  // Mock prayer days data - In production, fetch from backend
+  const generatePrayerDays = () => {
+    const days = [];
+    const today = new Date();
+    for (let i = 0; i < displayConsecutiveDays; i++) {
+      const date = new Date(today);
+      date.setDate(date.getDate() - i);
+      days.push(date);
+    }
+    return days;
+  };
+
+  const prayerDays = generatePrayerDays();
+
   return (
+    <>
     <ScrollView 
       style={styles.container}
       contentContainerStyle={[
@@ -38,6 +62,8 @@ const HomeScreen = ({ navigation }) => {
         userName={displayName}
         answeredPrayers={displayAnsweredPrayers}
         consecutiveDays={displayConsecutiveDays}
+        onAnsweredPrayersPress={handleAnsweredPrayersPress}
+        onConsecutiveDaysPress={handleConsecutiveDaysPress}
       />
 
       {/* 2. Primary Action - Pray Now Button */}
@@ -105,11 +131,64 @@ const HomeScreen = ({ navigation }) => {
           <Text style={styles.referenceText}>{mockDevotional.reference}</Text>
           
           <View style={styles.reflectionContainer}>
-            <Text style={styles.reflectionText}>{mockDevotional.reflection}</Text>
-          </View>
+          <Text style={styles.reflectionText}>{mockDevotional.reflection}</Text>
         </View>
       </View>
+    </View>
     </ScrollView>
+
+    {/* Calendar Modal */}
+    <Modal
+      visible={showCalendarModal}
+      animationType="slide"
+      presentationStyle="pageSheet"
+      onRequestClose={() => setShowCalendarModal(false)}
+    >
+      <View style={styles.modalContainer}>
+        <View style={styles.modalHeader}>
+          <Text style={styles.modalTitle}>Dias de Oração 🔥</Text>
+          <Pressable onPress={() => setShowCalendarModal(false)}>
+            <Ionicons name="close" size={28} color={Colors.textPrimary} />
+          </Pressable>
+        </View>
+
+        <ScrollView style={styles.modalContent}>
+          <View style={styles.streakInfo}>
+            <Ionicons name="flame" size={48} color={Colors.accentYellow} />
+            <Text style={styles.streakNumber}>{displayConsecutiveDays}</Text>
+            <Text style={styles.streakText}>Dias Consecutivos</Text>
+            <Text style={styles.streakSubtext}>
+              Continue orando para manter sua sequência!
+            </Text>
+          </View>
+
+          <View style={styles.calendarSection}>
+            <Text style={styles.calendarTitle}>Histórico de Oração</Text>
+            {prayerDays.map((date, index) => (
+              <View key={index} style={styles.calendarDay}>
+                <View style={styles.calendarDayIcon}>
+                  <Ionicons name="checkmark-circle" size={24} color={Colors.success} />
+                </View>
+                <View style={styles.calendarDayInfo}>
+                  <Text style={styles.calendarDayDate}>
+                    {date.toLocaleDateString("pt-BR", { 
+                      weekday: "long", 
+                      year: "numeric", 
+                      month: "long", 
+                      day: "numeric" 
+                    })}
+                  </Text>
+                  <Text style={styles.calendarDayLabel}>
+                    {index === 0 ? "Hoje" : `${index} ${index === 1 ? "dia atrás" : "dias atrás"}`}
+                  </Text>
+                </View>
+              </View>
+            ))}
+          </View>
+        </ScrollView>
+      </View>
+    </Modal>
+  </>
   );
 };
 
@@ -214,6 +293,87 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: Colors.textSecondary,
     lineHeight: 22,
+  },
+  modalContainer: {
+    flex: 1,
+    backgroundColor: Colors.backgroundWhite,
+  },
+  modalHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingHorizontal: 20,
+    paddingVertical: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: Colors.border,
+  },
+  modalTitle: {
+    fontSize: 20,
+    fontWeight: "bold",
+    color: Colors.textPrimary,
+  },
+  modalContent: {
+    flex: 1,
+  },
+  streakInfo: {
+    alignItems: "center",
+    paddingVertical: 40,
+    backgroundColor: Colors.background,
+  },
+  streakNumber: {
+    fontSize: 48,
+    fontWeight: "bold",
+    color: Colors.textPrimary,
+    marginTop: 12,
+  },
+  streakText: {
+    fontSize: 18,
+    fontWeight: "600",
+    color: Colors.textSecondary,
+    marginTop: 8,
+  },
+  streakSubtext: {
+    fontSize: 14,
+    color: Colors.textTertiary,
+    marginTop: 8,
+    textAlign: "center",
+  },
+  calendarSection: {
+    padding: 20,
+  },
+  calendarTitle: {
+    fontSize: 18,
+    fontWeight: "bold",
+    color: Colors.textPrimary,
+    marginBottom: 16,
+  },
+  calendarDay: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    backgroundColor: Colors.backgroundWhite,
+    borderRadius: 12,
+    marginBottom: 8,
+    borderWidth: 1,
+    borderColor: Colors.border,
+  },
+  calendarDayIcon: {
+    marginRight: 12,
+  },
+  calendarDayInfo: {
+    flex: 1,
+  },
+  calendarDayDate: {
+    fontSize: 15,
+    fontWeight: "600",
+    color: Colors.textPrimary,
+    textTransform: "capitalize",
+  },
+  calendarDayLabel: {
+    fontSize: 13,
+    color: Colors.textSecondary,
+    marginTop: 2,
   },
 });
 
