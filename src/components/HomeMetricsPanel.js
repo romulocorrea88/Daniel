@@ -22,7 +22,10 @@ const HomeMetricsPanel = ({
           onPress={onAnsweredPrayersPress}
           activeOpacity={0.7}
         >
-          <Text style={styles.metricValue}>{answeredPrayers}</Text>
+          <View style={styles.metricValueContainer}>
+            <Text style={styles.metricValue}>{answeredPrayers}</Text>
+            <Text style={styles.metricEmoji}>🏆</Text>
+          </View>
           <Text style={styles.metricLabel}>Orações Respondidas</Text>
         </TouchableOpacity>
 
@@ -31,7 +34,10 @@ const HomeMetricsPanel = ({
           onPress={onConsecutiveDaysPress}
           activeOpacity={0.7}
         >
-          <Text style={styles.metricValue}>{consecutiveDays}</Text>
+          <View style={styles.metricValueContainer}>
+            <Text style={styles.metricValue}>{consecutiveDays}</Text>
+            <Text style={styles.metricEmoji}>🙏</Text>
+          </View>
           <Text style={styles.metricLabel}>Dias Consecutivos</Text>
         </TouchableOpacity>
       </View>
@@ -59,7 +65,7 @@ const styles = StyleSheet.create({
   },
   metricCard: {
     flex: 1,
-    backgroundColor: "rgba(0, 0, 0, 0.1)",
+    backgroundColor: "rgba(0, 0, 0, 0.15)",
     borderRadius: 10,
     paddingVertical: 16,
     paddingHorizontal: 12,
@@ -67,15 +73,23 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     elevation: 0,
   },
+  metricValueContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+  },
   metricValue: {
     fontSize: 24,
     fontWeight: "bold",
     color: Colors.primaryGreen,
   },
+  metricEmoji: {
+    fontSize: 20,
+  },
   metricLabel: {
     fontSize: 12,
     fontWeight: "normal",
-    color: "#BDBDBD",
+    color: "#9E9E9E",
     textAlign: "center",
     marginTop: 4,
   },

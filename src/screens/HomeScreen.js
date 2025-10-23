@@ -1,12 +1,12 @@
-import React, { useState, useCallback, useMemo } from "react";
-import { View, Text, StyleSheet, ScrollView, Modal } from "react-native";
+import React, { useState, useCallback, useMemo, useEffect } from "react";
+import { View, Text, StyleSheet, ScrollView, Modal, Linking } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import Animated, { FadeIn, FadeInDown } from "react-native-reanimated";
 import HomeMetricsPanel from "../components/HomeMetricsPanel";
 import PrayerTimeChart from "../components/PrayerTimeChart";
 import HapticPressable from "../components/HapticPressable";
-import { mockUser, mockDevotional } from "../utils/mockData";
+import { mockUser, getDailyDevotional } from "../utils/mockData";
 import useAuthStore from "../state/authStore";
 import useHaptics from "../utils/useHaptics";
 import Colors from "../constants/Colors";
@@ -15,7 +15,30 @@ const HomeScreen = ({ navigation }) => {
   const insets = useSafeAreaInsets();
   const { isGuest, user } = useAuthStore();
   const [showCalendarModal, setShowCalendarModal] = useState(false);
+  const [devotional, setDevotional] = useState(getDailyDevotional());
   const haptics = useHaptics();
+
+  // Update devotional at midnight
+  useEffect(() => {
+    const checkMidnight = () => {
+      const now = new Date();
+      const midnight = new Date(now);
+      midnight.setHours(24, 0, 0, 0);
+      
+      const timeUntilMidnight = midnight - now;
+      
+      const timer = setTimeout(() => {
+        setDevotional(getDailyDevotional());
+        // Set up next check for tomorrow
+        checkMidnight();
+      }, timeUntilMidnight);
+      
+      return timer;
+    };
+    
+    const timer = checkMidnight();
+    return () => clearTimeout(timer);
+  }, []);
 
   // Use guest name or authenticated user name
   const displayName = useMemo(() => 
@@ -45,6 +68,15 @@ const HomeScreen = ({ navigation }) => {
     haptics.light();
     navigation.navigate("HistoricoEstatisticas", { type: "consecutive" });
   }, [haptics, navigation]);
+
+  const handleContributePress = useCallback(async () => {
+    haptics.medium();
+    const url = "https://github.com/sponsors";
+    const canOpen = await Linking.canOpenURL(url);
+    if (canOpen) {
+      await Linking.openURL(url);
+    }
+  }, [haptics]);
 
   // Mock prayer days data - In production, fetch from backend
   const prayerDays = useMemo(() => {
@@ -113,19 +145,35 @@ const HomeScreen = ({ navigation }) => {
       <Animated.View entering={FadeInDown.delay(400).duration(400)}>
         <View style={styles.devotionalContainer}>
         <View style={styles.sectionHeader}>
-          <Ionicons name="book" size={24} color={Colors.textPrimary} />
+          <Text style={styles.sectionIcon}>📖</Text>
           <Text style={styles.sectionTitle}>Texto Bíblico do Dia</Text>
         </View>
         
         <View style={styles.devotionalCard}>
-          <Text style={styles.verseText}>{mockDevotional.verse}</Text>
-          <Text style={styles.referenceText}>{mockDevotional.reference}</Text>
+          <Text style={styles.verseText}>{devotional.verse}</Text>
+          <Text style={styles.referenceText}>{devotional.reference}</Text>
           
           <View style={styles.reflectionContainer}>
-          <Text style={styles.reflectionText}>{mockDevotional.reflection}</Text>
+          <Text style={styles.reflectionText}>{devotional.reflection}</Text>
           </View>
         </View>
       </View>
+      </Animated.View>
+
+      {/* 5. Contribute Button */}
+      <Animated.View 
+        style={styles.contributeContainer}
+        entering={FadeInDown.delay(500).duration(400)}
+      >
+        <HapticPressable
+          style={styles.contributeButton}
+          onPress={handleContributePress}
+          hapticType="light"
+          scaleValue={0.98}
+        >
+          <Text style={styles.contributeIcon}>🤝</Text>
+          <Text style={styles.contributeText}>Contribua com o projeto</Text>
+        </HapticPressable>
       </Animated.View>
     </Animated.ScrollView>
 
@@ -252,6 +300,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 8,
     marginBottom: 16,
+  },
+  sectionIcon: {
+    fontSize: 24,
   },
   sectionTitle: {
     fontSize: 20,
@@ -382,6 +433,33 @@ const styles = StyleSheet.create({
     fontSize: 13,
     fontWeight: "600",
     color: Colors.primaryGreen,
+  },
+  contributeContainer: {
+    paddingHorizontal: 20,
+    paddingVertical: 24,
+    alignItems: "center",
+  },
+  contributeButton: {
+    backgroundColor: Colors.backgroundWhite,
+    paddingVertical: 16,
+    paddingHorizontal: 24,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: Colors.border,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
+    width: "100%",
+    maxWidth: 400,
+    justifyContent: "center",
+  },
+  contributeIcon: {
+    fontSize: 20,
+  },
+  contributeText: {
+    fontSize: 16,
+    fontWeight: "600",
+    color: Colors.textPrimary,
   },
 });
 
