@@ -10,7 +10,9 @@ import AuthScreen from "../screens/AuthScreen";
 import HomeScreen from "../screens/HomeScreen";
 import MyPrayersScreen from "../screens/MyPrayersScreen";
 import CommunityScreen from "../screens/CommunityScreen";
-import StudiesScreen from "../screens/StudiesScreen";
+import BibleScreen from "../screens/BibleScreen";
+import BibleBookScreen from "../screens/BibleBookScreen";
+import BibleReaderScreen from "../screens/BibleReaderScreen";
 import ProfileScreen from "../screens/ProfileScreen";
 import PrayerModeScreen from "../screens/PrayerModeScreen";
 import HistoricoEstatisticas from "../screens/HistoricoEstatisticas";
@@ -32,7 +34,7 @@ const MainTabs = () => {
             iconName = focused ? "home" : "home-outline";
           } else if (route.name === "MyPrayers") {
             iconName = focused ? "list" : "list-outline";
-          } else if (route.name === "Studies") {
+          } else if (route.name === "Bible") {
             iconName = focused ? "book" : "book-outline";
           } else if (route.name === "Profile") {
             iconName = focused ? "person" : "person-outline";
@@ -67,9 +69,9 @@ const MainTabs = () => {
         options={{ tabBarLabel: "Meus Pedidos" }}
       />
       <Tab.Screen 
-        name="Studies" 
-        component={StudiesScreen}
-        options={{ tabBarLabel: "Estudos" }}
+        name="Bible" 
+        component={BibleScreen}
+        options={{ tabBarLabel: "Bíblia" }}
       />
       <Tab.Screen 
         name="Profile" 
@@ -133,6 +135,22 @@ const RootNavigator = () => {
         <Stack.Screen 
           name="PrayerCalendar" 
           component={PrayerCalendarScreen}
+          options={{
+            animation: "slide_from_right",
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen 
+          name="BibleBook" 
+          component={BibleBookScreen}
+          options={{
+            animation: "slide_from_right",
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen 
+          name="BibleReader" 
+          component={BibleReaderScreen}
           options={{
             animation: "slide_from_right",
             headerShown: false,
