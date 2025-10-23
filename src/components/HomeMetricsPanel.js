@@ -1,5 +1,6 @@
 import React from "react";
 import { View, Text, StyleSheet, Pressable } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import Colors from "../constants/Colors";
 
@@ -10,8 +11,10 @@ const HomeMetricsPanel = ({
   onAnsweredPrayersPress,
   onConsecutiveDaysPress 
 }) => {
+  const insets = useSafeAreaInsets();
+  
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { paddingTop: insets.top + 20 }]}>
       <Text style={styles.greeting}>Oi {userName}!</Text>
       
       <View style={styles.metricsContainer}>
@@ -47,7 +50,6 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: Colors.backgroundWhite,
     paddingHorizontal: 20,
-    paddingTop: 32,
     paddingBottom: 24,
   },
   greeting: {
@@ -64,21 +66,21 @@ const styles = StyleSheet.create({
   },
   metricCard: {
     flex: 1,
-    backgroundColor: "#2E7D32",
+    backgroundColor: "#1B5E20",
     borderRadius: 16,
     paddingVertical: 20,
     paddingHorizontal: 12,
     alignItems: "center",
     borderWidth: 2,
-    borderColor: "#388E3C",
-    elevation: 4,
+    borderColor: "#2E7D32",
+    elevation: 12,
     shadowColor: "#1B5E20",
-    shadowOffset: { width: 0, height: 3 },
-    shadowOpacity: 0.3,
-    shadowRadius: 6,
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.5,
+    shadowRadius: 12,
   },
   metricCardPressed: {
-    backgroundColor: "#1B5E20",
+    backgroundColor: "#145214",
     transform: [{ scale: 0.96 }],
   },
   metricValue: {
