@@ -13,6 +13,7 @@ import CommunityScreen from "../screens/CommunityScreen";
 import StudiesScreen from "../screens/StudiesScreen";
 import ProfileScreen from "../screens/ProfileScreen";
 import PrayerModeScreen from "../screens/PrayerModeScreen";
+import HistoricoEstatisticas from "../screens/HistoricoEstatisticas";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -108,6 +109,14 @@ const RootNavigator = () => {
           options={{
             presentation: "fullScreenModal",
             animation: "slide_from_bottom",
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen 
+          name="HistoricoEstatisticas" 
+          component={HistoricoEstatisticas}
+          options={{
+            animation: "slide_from_right",
             headerShown: false,
           }}
         />

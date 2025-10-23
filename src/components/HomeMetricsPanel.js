@@ -1,7 +1,6 @@
 import React from "react";
-import { View, Text, StyleSheet, Pressable } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { Ionicons } from "@expo/vector-icons";
 import Colors from "../constants/Colors";
 
 const HomeMetricsPanel = ({ 
@@ -18,29 +17,23 @@ const HomeMetricsPanel = ({
       <Text style={styles.greeting}>Oi {userName}!</Text>
       
       <View style={styles.metricsContainer}>
-        <Pressable 
-          style={({ pressed }) => [
-            styles.metricCard,
-            pressed && styles.metricCardPressed
-          ]}
+        <TouchableOpacity 
+          style={styles.metricCard}
           onPress={onAnsweredPrayersPress}
+          activeOpacity={0.7}
         >
-          <Ionicons name="checkmark-circle" size={36} color="#FFFFFF" />
           <Text style={styles.metricValue}>{answeredPrayers}</Text>
           <Text style={styles.metricLabel}>Orações Respondidas</Text>
-        </Pressable>
+        </TouchableOpacity>
 
-        <Pressable 
-          style={({ pressed }) => [
-            styles.metricCard,
-            pressed && styles.metricCardPressed
-          ]}
+        <TouchableOpacity 
+          style={styles.metricCard}
           onPress={onConsecutiveDaysPress}
+          activeOpacity={0.7}
         >
-          <Ionicons name="flame" size={36} color="#FFD54F" />
           <Text style={styles.metricValue}>{consecutiveDays}</Text>
           <Text style={styles.metricLabel}>Dias Consecutivos</Text>
-        </Pressable>
+        </TouchableOpacity>
       </View>
     </View>
   );
@@ -66,35 +59,25 @@ const styles = StyleSheet.create({
   },
   metricCard: {
     flex: 1,
-    backgroundColor: "#1B5E20",
-    borderRadius: 16,
-    paddingVertical: 20,
+    backgroundColor: "rgba(0, 0, 0, 0.1)",
+    borderRadius: 10,
+    paddingVertical: 16,
     paddingHorizontal: 12,
     alignItems: "center",
-    borderWidth: 2,
-    borderColor: "#2E7D32",
-    elevation: 12,
-    shadowColor: "#1B5E20",
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.5,
-    shadowRadius: 12,
-  },
-  metricCardPressed: {
-    backgroundColor: "#145214",
-    transform: [{ scale: 0.96 }],
+    justifyContent: "center",
+    elevation: 0,
   },
   metricValue: {
-    fontSize: 28,
+    fontSize: 24,
     fontWeight: "bold",
-    color: "#FFFFFF",
-    marginTop: 10,
+    color: Colors.primaryGreen,
   },
   metricLabel: {
-    fontSize: 13,
-    fontWeight: "600",
-    color: "#A5D6A7",
+    fontSize: 12,
+    fontWeight: "normal",
+    color: "#BDBDBD",
     textAlign: "center",
-    marginTop: 6,
+    marginTop: 4,
   },
 });
 

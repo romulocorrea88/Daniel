@@ -38,13 +38,13 @@ const HomeScreen = ({ navigation }) => {
 
   const handleAnsweredPrayersPress = useCallback(() => {
     haptics.light();
-    navigation.navigate("MyPrayers", { filter: "answered" });
+    navigation.navigate("HistoricoEstatisticas", { type: "answered" });
   }, [navigation, haptics]);
 
   const handleConsecutiveDaysPress = useCallback(() => {
     haptics.light();
-    setShowCalendarModal(true);
-  }, [haptics]);
+    navigation.navigate("HistoricoEstatisticas", { type: "consecutive" });
+  }, [haptics, navigation]);
 
   // Mock prayer days data - In production, fetch from backend
   const prayerDays = useMemo(() => {
