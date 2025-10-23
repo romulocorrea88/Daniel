@@ -50,6 +50,10 @@ const ProfileScreen = ({ navigation }) => {
     );
   };
 
+  const handlePrivacyPolicy = () => {
+    navigation.navigate("PrivacyPolicy");
+  };
+
   const handleHelp = () => {
     Alert.alert(
       "Ajuda e Suporte",
@@ -79,13 +83,20 @@ const ProfileScreen = ({ navigation }) => {
     },
     {
       id: 3,
+      icon: "shield-checkmark-outline",
+      title: "Política de Privacidade",
+      subtitle: "Como protegemos seus dados",
+      onPress: handlePrivacyPolicy,
+    },
+    {
+      id: 4,
       icon: "help-circle-outline",
       title: "Ajuda e Suporte",
       subtitle: "Precisa de ajuda?",
       onPress: handleHelp,
     },
     {
-      id: 4,
+      id: 5,
       icon: "information-circle-outline",
       title: "Sobre",
       subtitle: "Versão 1.0.0",
