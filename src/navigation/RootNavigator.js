@@ -29,8 +29,6 @@ const MainTabs = () => {
             iconName = focused ? "home" : "home-outline";
           } else if (route.name === "MyPrayers") {
             iconName = focused ? "list" : "list-outline";
-          } else if (route.name === "Community") {
-            iconName = focused ? "people" : "people-outline";
           } else if (route.name === "Studies") {
             iconName = focused ? "book" : "book-outline";
           } else if (route.name === "Profile") {
@@ -42,9 +40,9 @@ const MainTabs = () => {
         tabBarActiveTintColor: Colors.primaryGreen,
         tabBarInactiveTintColor: Colors.textTertiary,
         tabBarStyle: {
-          height: 60,
-          paddingBottom: 8,
-          paddingTop: 8,
+          height: 70,
+          paddingBottom: 12,
+          paddingTop: 12,
           borderTopWidth: 1,
           borderTopColor: Colors.border,
           backgroundColor: Colors.backgroundWhite,
@@ -64,11 +62,6 @@ const MainTabs = () => {
         name="MyPrayers" 
         component={MyPrayersScreen}
         options={{ tabBarLabel: "Meus Pedidos" }}
-      />
-      <Tab.Screen 
-        name="Community" 
-        component={CommunityScreen}
-        options={{ tabBarLabel: "Amigos" }}
       />
       <Tab.Screen 
         name="Studies" 

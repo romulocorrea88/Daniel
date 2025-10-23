@@ -22,7 +22,7 @@ const HomeMetricsPanel = ({
           ]}
           onPress={onAnsweredPrayersPress}
         >
-          <Ionicons name="checkmark-circle" size={32} color={Colors.success} />
+          <Ionicons name="checkmark-circle" size={36} color="#FFFFFF" />
           <Text style={styles.metricValue}>{answeredPrayers}</Text>
           <Text style={styles.metricLabel}>Orações Respondidas</Text>
         </Pressable>
@@ -34,7 +34,7 @@ const HomeMetricsPanel = ({
           ]}
           onPress={onConsecutiveDaysPress}
         >
-          <Ionicons name="flame" size={32} color={Colors.accentYellow} />
+          <Ionicons name="flame" size={36} color="#FFD54F" />
           <Text style={styles.metricValue}>{consecutiveDays}</Text>
           <Text style={styles.metricLabel}>Dias Consecutivos</Text>
         </Pressable>
@@ -47,43 +47,52 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: Colors.backgroundWhite,
     paddingHorizontal: 20,
-    paddingVertical: 24,
+    paddingTop: 32,
+    paddingBottom: 24,
   },
   greeting: {
     fontSize: 28,
     fontWeight: "bold",
     color: Colors.textPrimary,
-    marginBottom: 20,
+    marginBottom: 28,
   },
   metricsContainer: {
     flexDirection: "row",
-    justifyContent: "space-between",
-    gap: 12,
+    justifyContent: "center",
+    alignItems: "center",
+    gap: 16,
   },
   metricCard: {
     flex: 1,
-    backgroundColor: Colors.secondaryMintLight + "40",
-    borderRadius: 12,
-    padding: 16,
+    backgroundColor: "#2E7D32",
+    borderRadius: 16,
+    paddingVertical: 20,
+    paddingHorizontal: 12,
     alignItems: "center",
-    borderWidth: 1,
-    borderColor: Colors.borderLight,
+    borderWidth: 2,
+    borderColor: "#388E3C",
+    elevation: 4,
+    shadowColor: "#1B5E20",
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.3,
+    shadowRadius: 6,
   },
   metricCardPressed: {
-    backgroundColor: Colors.secondaryMintLight + "60",
-    transform: [{ scale: 0.98 }],
+    backgroundColor: "#1B5E20",
+    transform: [{ scale: 0.96 }],
   },
   metricValue: {
-    fontSize: 24,
+    fontSize: 28,
     fontWeight: "bold",
-    color: Colors.textPrimary,
-    marginTop: 8,
+    color: "#FFFFFF",
+    marginTop: 10,
   },
   metricLabel: {
-    fontSize: 12,
-    color: Colors.textSecondary,
+    fontSize: 13,
+    fontWeight: "600",
+    color: "#A5D6A7",
     textAlign: "center",
-    marginTop: 4,
+    marginTop: 6,
   },
 });
 
