@@ -54,7 +54,7 @@ const ACTS_STEPS = [
 const PrayerModeScreen = ({ navigation }) => {
   const [currentStep, setCurrentStep] = useState(0);
   const [seconds, setSeconds] = useState(0);
-  const [isActive, setIsActive] = useState(false);
+  const [isActive, setIsActive] = useState(true); // Inicia automaticamente
   const [notes, setNotes] = useState({
     adoration: "",
     confession: "",
@@ -84,12 +84,6 @@ const PrayerModeScreen = ({ navigation }) => {
       if (interval) clearInterval(interval);
     };
   }, [isActive]);
-
-  useEffect(() => {
-    if (currentStep > 0 && !isActive) {
-      setIsActive(true);
-    }
-  }, [currentStep]);
 
   const formatTime = useCallback((totalSeconds) => {
     const minutes = Math.floor(totalSeconds / 60);
