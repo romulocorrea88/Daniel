@@ -3,8 +3,8 @@ import { View, Text, StyleSheet, ScrollView, Pressable, Modal } from "react-nati
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import HomeMetricsPanel from "../components/HomeMetricsPanel";
-import PrayerItem from "../components/PrayerItem";
-import { mockUser, mockFriendsPrayers, mockDevotional } from "../utils/mockData";
+import PrayerTimeChart from "../components/PrayerTimeChart";
+import { mockUser, mockDevotional } from "../utils/mockData";
 import useAuthStore from "../state/authStore";
 import Colors from "../constants/Colors";
 
@@ -22,10 +22,6 @@ const HomeScreen = ({ navigation }) => {
     navigation.navigate("FocusMode");
   };
 
-  const handlePrayerItemPress = (prayer) => {
-    // Navigate to prayer detail in the future
-  };
-
   const handleAnsweredPrayersPress = () => {
     navigation.navigate("MyPrayers", { filter: "answered" });
   };
@@ -38,10 +34,15 @@ const HomeScreen = ({ navigation }) => {
   const generatePrayerDays = () => {
     const days = [];
     const today = new Date();
+    const mockTimes = [20, 15, 18, 22, 25, 12, 30]; // Mock prayer times in minutes
+    
     for (let i = 0; i < displayConsecutiveDays; i++) {
       const date = new Date(today);
       date.setDate(date.getDate() - i);
-      days.push(date);
+      days.push({
+        date: date,
+        minutes: mockTimes[i % mockTimes.length] || 15
+      });
     }
     return days;
   };
@@ -70,54 +71,21 @@ const HomeScreen = ({ navigation }) => {
       <View style={styles.actionContainer}>
         <Pressable
           style={({ pressed }) => [
-            {
-              backgroundColor: pressed ? "#0F4214" : "#1B5E20",
-              width: "100%",
-              maxWidth: 400,
-              paddingVertical: 28,
-              borderRadius: 20,
-              elevation: 8,
-              shadowColor: "#1B5E20",
-              shadowOffset: { width: 0, height: 4 },
-              shadowOpacity: 0.4,
-              shadowRadius: 8,
-              transform: pressed ? [{ scale: 0.98 }] : [{ scale: 1 }],
-            }
+            styles.prayNowButton,
+            pressed && styles.prayNowButtonPressed
           ]}
           onPress={handlePrayNow}
         >
           <View style={styles.prayNowContent}>
-            <Ionicons name="prism" size={40} color="#FFFFFF" />
+            <Ionicons name="prism" size={48} color="#FFFFFF" />
             <Text style={styles.prayNowText}>Orar Agora</Text>
+            <Text style={styles.prayNowSubtext}>Método ACTS</Text>
           </View>
         </Pressable>
       </View>
 
-      {/* 3. Secondary Content - Friends' Prayers */}
-      <View style={styles.sectionContainer}>
-        <View style={styles.sectionHeader}>
-          <Ionicons name="people" size={24} color={Colors.textPrimary} />
-          <Text style={styles.sectionTitle}>Ore por seus amigos</Text>
-        </View>
-        
-        {mockFriendsPrayers.slice(0, 3).map((prayer) => (
-          <PrayerItem
-            key={prayer.id}
-            friendName={prayer.friendName}
-            prayerRequest={prayer.prayerRequest}
-            category={prayer.category}
-            onPress={() => handlePrayerItemPress(prayer)}
-          />
-        ))}
-
-        <Pressable 
-          style={styles.seeAllButton}
-          onPress={() => navigation.navigate("Community")}
-        >
-          <Text style={styles.seeAllText}>Ver todos os pedidos</Text>
-          <Ionicons name="arrow-forward" size={18} color={Colors.primaryGreen} />
-        </Pressable>
-      </View>
+      {/* 3. Prayer Time Chart */}
+      <PrayerTimeChart />
 
       {/* 4. Devotional Section */}
       <View style={styles.devotionalContainer}>
@@ -164,14 +132,14 @@ const HomeScreen = ({ navigation }) => {
 
           <View style={styles.calendarSection}>
             <Text style={styles.calendarTitle}>Histórico de Oração</Text>
-            {prayerDays.map((date, index) => (
+            {prayerDays.map((item, index) => (
               <View key={index} style={styles.calendarDay}>
                 <View style={styles.calendarDayIcon}>
                   <Ionicons name="checkmark-circle" size={24} color={Colors.success} />
                 </View>
                 <View style={styles.calendarDayInfo}>
                   <Text style={styles.calendarDayDate}>
-                    {date.toLocaleDateString("pt-BR", { 
+                    {item.date.toLocaleDateString("pt-BR", { 
                       weekday: "long", 
                       year: "numeric", 
                       month: "long", 
@@ -181,6 +149,10 @@ const HomeScreen = ({ navigation }) => {
                   <Text style={styles.calendarDayLabel}>
                     {index === 0 ? "Hoje" : `${index} ${index === 1 ? "dia atrás" : "dias atrás"}`}
                   </Text>
+                </View>
+                <View style={styles.calendarDayTime}>
+                  <Ionicons name="time" size={16} color={Colors.primaryGreen} />
+                  <Text style={styles.calendarDayTimeText}>{item.minutes} min</Text>
                 </View>
               </View>
             ))}
@@ -209,17 +181,20 @@ const styles = StyleSheet.create({
     backgroundColor: "#1B5E20",
     width: "100%",
     maxWidth: 400,
-    paddingVertical: 28,
+    paddingVertical: 32,
     borderRadius: 20,
-    elevation: 8,
+    elevation: 12,
     shadowColor: "#1B5E20",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.4,
-    shadowRadius: 8,
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.5,
+    shadowRadius: 12,
+    borderWidth: 2,
+    borderColor: "#2E7D32",
   },
   prayNowButtonPressed: {
     backgroundColor: "#0F4214",
-    transform: [{ scale: 0.98 }],
+    transform: [{ scale: 0.97 }],
+    elevation: 8,
   },
   prayNowContent: {
     flexDirection: "column",
@@ -228,12 +203,22 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   prayNowText: {
-    fontSize: 24,
+    fontSize: 28,
     fontWeight: "bold",
     color: "#FFFFFF",
     letterSpacing: 0.5,
+    textShadowColor: "rgba(0, 0, 0, 0.3)",
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 3,
   },
-  sectionContainer: {
+  prayNowSubtext: {
+    fontSize: 14,
+    fontWeight: "600",
+    color: "#A5D6A7",
+    letterSpacing: 2,
+    textTransform: "uppercase",
+  },
+  devotionalContainer: {
     paddingHorizontal: 20,
     paddingVertical: 16,
   },
@@ -247,22 +232,6 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: "bold",
     color: Colors.textPrimary,
-  },
-  seeAllButton: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 8,
-    paddingVertical: 12,
-  },
-  seeAllText: {
-    fontSize: 16,
-    fontWeight: "600",
-    color: Colors.primaryGreen,
-  },
-  devotionalContainer: {
-    paddingHorizontal: 20,
-    paddingVertical: 16,
   },
   devotionalCard: {
     backgroundColor: Colors.backgroundWhite,
@@ -374,6 +343,20 @@ const styles = StyleSheet.create({
     fontSize: 13,
     color: Colors.textSecondary,
     marginTop: 2,
+  },
+  calendarDayTime: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 4,
+    backgroundColor: Colors.secondaryMintLight + "30",
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: 12,
+  },
+  calendarDayTimeText: {
+    fontSize: 13,
+    fontWeight: "600",
+    color: Colors.primaryGreen,
   },
 });
 

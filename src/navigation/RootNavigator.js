@@ -12,7 +12,7 @@ import MyPrayersScreen from "../screens/MyPrayersScreen";
 import CommunityScreen from "../screens/CommunityScreen";
 import StudiesScreen from "../screens/StudiesScreen";
 import ProfileScreen from "../screens/ProfileScreen";
-import FocusModeTimer from "../components/FocusModeTimer";
+import PrayerModeScreen from "../screens/PrayerModeScreen";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -111,10 +111,11 @@ const RootNavigator = () => {
         />
         <Stack.Screen 
           name="FocusMode" 
-          component={FocusModeTimer}
+          component={PrayerModeScreen}
           options={{
             presentation: "fullScreenModal",
             animation: "slide_from_bottom",
+            headerShown: false,
           }}
         />
       </Stack.Navigator>
