@@ -1,26 +1,55 @@
-import React from "react";
-import { View, Text, StyleSheet } from "react-native";
+import React, { useMemo } from "react";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native";
+import usePrayerStore from "../state/prayerStore";
 import Colors from "../constants/Colors";
 
 const PrayerTimeChart = () => {
-  // Mock data - In production, fetch from backend
-  const last7Days = [
-    { day: "Dom", minutes: 15, date: "20/10" },
-    { day: "Seg", minutes: 22, date: "21/10" },
-    { day: "Ter", minutes: 18, date: "22/10" },
-    { day: "Qua", minutes: 30, date: "23/10" },
-    { day: "Qui", minutes: 12, date: "24/10" },
-    { day: "Sex", minutes: 25, date: "25/10" },
-    { day: "Sáb", minutes: 20, date: "26/10" },
-  ];
+  const navigation = useNavigation();
+  const { sessions, getWeeklyPrayerTime } = usePrayerStore();
 
-  const maxMinutes = Math.max(...last7Days.map(d => d.minutes));
+  // Get last 7 days data
+  const last7Days = useMemo(() => {
+    const days = [];
+    const today = new Date();
+    
+    for (let i = 6; i >= 0; i--) {
+      const date = new Date(today);
+      date.setDate(date.getDate() - i);
+      date.setHours(0, 0, 0, 0);
+      
+      const dateString = date.toISOString().split("T")[0];
+      
+      // Get sessions for this date
+      const daySessions = sessions.filter(s => s.date === dateString);
+      const totalSeconds = daySessions.reduce((sum, s) => sum + s.duration, 0);
+      const minutes = Math.floor(totalSeconds / 60);
+      
+      days.push({
+        day: date.toLocaleDateString("pt-BR", { weekday: "short" }),
+        minutes,
+        date: date.toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit" }),
+      });
+    }
+    
+    return days;
+  }, [sessions]);
+
+  const maxMinutes = Math.max(...last7Days.map(d => d.minutes), 1);
   const totalMinutes = last7Days.reduce((sum, d) => sum + d.minutes, 0);
-  const avgMinutes = Math.round(totalMinutes / 7);
+  const avgMinutes = last7Days.length > 0 ? Math.round(totalMinutes / 7) : 0;
+
+  const handleChartPress = () => {
+    navigation.navigate("PrayerCalendar");
+  };
 
   return (
-    <View style={styles.container}>
+    <TouchableOpacity 
+      style={styles.container}
+      onPress={handleChartPress}
+      activeOpacity={0.8}
+    >
       <View style={styles.header}>
         <View style={styles.headerLeft}>
           <Ionicons name="bar-chart" size={24} color={Colors.primaryGreen} />
@@ -87,7 +116,7 @@ const PrayerTimeChart = () => {
           </View>
         </View>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 };
 

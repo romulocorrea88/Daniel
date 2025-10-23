@@ -15,6 +15,7 @@ import ProfileScreen from "../screens/ProfileScreen";
 import PrayerModeScreen from "../screens/PrayerModeScreen";
 import HistoricoEstatisticas from "../screens/HistoricoEstatisticas";
 import PrivacyPolicyScreen from "../screens/PrivacyPolicyScreen";
+import PrayerCalendarScreen from "../screens/PrayerCalendarScreen";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -124,6 +125,14 @@ const RootNavigator = () => {
         <Stack.Screen 
           name="PrivacyPolicy" 
           component={PrivacyPolicyScreen}
+          options={{
+            animation: "slide_from_right",
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen 
+          name="PrayerCalendar" 
+          component={PrayerCalendarScreen}
           options={{
             animation: "slide_from_right",
             headerShown: false,

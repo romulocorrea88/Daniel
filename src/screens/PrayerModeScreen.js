@@ -5,6 +5,7 @@ import { activateKeepAwakeAsync, deactivateKeepAwake } from "expo-keep-awake";
 import Animated, { FadeIn, FadeInDown, SlideInRight, SlideOutLeft, FadeOut } from "react-native-reanimated";
 import HapticPressable from "../components/HapticPressable";
 import useHaptics from "../utils/useHaptics";
+import usePrayerStore from "../state/prayerStore";
 import Colors from "../constants/Colors";
 
 // Enable LayoutAnimation for Android
@@ -63,6 +64,7 @@ const PrayerModeScreen = ({ navigation }) => {
   });
   
   const haptics = useHaptics();
+  const { addPrayerSession } = usePrayerStore();
 
   useEffect(() => {
     activateKeepAwakeAsync();
@@ -115,14 +117,18 @@ const PrayerModeScreen = ({ navigation }) => {
     setIsActive(false);
     haptics.success();
     
-    const prayerData = {
+    // Save prayer session to store
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    
+    addPrayerSession({
+      date: today.toISOString().split("T")[0],
       duration: seconds,
-      date: new Date().toISOString(),
       notes: notes
-    };
+    });
     
     navigation.goBack();
-  }, [seconds, notes, navigation, haptics]);
+  }, [seconds, notes, navigation, haptics, addPrayerSession]);
 
   const handleClose = useCallback(() => {
     setIsActive(false);

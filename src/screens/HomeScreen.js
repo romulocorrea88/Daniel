@@ -8,12 +8,14 @@ import PrayerTimeChart from "../components/PrayerTimeChart";
 import HapticPressable from "../components/HapticPressable";
 import { mockUser, getDailyDevotional } from "../utils/mockData";
 import useAuthStore from "../state/authStore";
+import usePrayerStore from "../state/prayerStore";
 import useHaptics from "../utils/useHaptics";
 import Colors from "../constants/Colors";
 
 const HomeScreen = ({ navigation }) => {
   const insets = useSafeAreaInsets();
   const { isGuest, user } = useAuthStore();
+  const { stats } = usePrayerStore();
   const [showCalendarModal, setShowCalendarModal] = useState(false);
   const [devotional, setDevotional] = useState(getDailyDevotional());
   const haptics = useHaptics();
@@ -46,12 +48,12 @@ const HomeScreen = ({ navigation }) => {
     [isGuest, user]
   );
   const displayAnsweredPrayers = useMemo(() => 
-    isGuest ? 0 : mockUser.answeredPrayers,
-    [isGuest]
+    isGuest ? 0 : stats.answeredPrayers,
+    [isGuest, stats.answeredPrayers]
   );
   const displayConsecutiveDays = useMemo(() => 
-    isGuest ? 0 : mockUser.consecutiveDays,
-    [isGuest]
+    isGuest ? 0 : stats.consecutiveDays,
+    [isGuest, stats.consecutiveDays]
   );
 
   const handlePrayNow = useCallback(() => {
