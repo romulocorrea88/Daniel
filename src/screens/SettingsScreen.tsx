@@ -259,7 +259,7 @@ const SettingsScreen = ({ navigation }: any) => {
                 Ajude-nos a manter o app gratuito e melhorá-lo cada vez mais
               </Text>
             </View>
-            <Ionicons name="chevron-forward" size={24} color={Colors.textTertiary} />
+            <Ionicons name="chevron-forward" size={28} color={Colors.backgroundWhite} />
           </TouchableOpacity>
         </View>
       </ScrollView>
@@ -500,37 +500,46 @@ const styles = StyleSheet.create({
   contributeCard: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: Colors.backgroundWhite,
-    borderRadius: 12,
-    padding: 16,
-    gap: 12,
-    borderWidth: 1,
-    borderColor: Colors.border,
+    backgroundColor: Colors.primaryGreen,
+    borderRadius: 16,
+    padding: 24,
+    gap: 16,
+    borderWidth: 2,
+    borderColor: Colors.primaryGreen,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+    shadowOpacity: 0.15,
+    shadowRadius: 8,
+    elevation: 6,
   },
   contributeIcon: {
-    width: 56,
-    height: 56,
-    borderRadius: 28,
-    backgroundColor: Colors.secondaryMintLight + "40",
+    width: 72,
+    height: 72,
+    borderRadius: 36,
+    backgroundColor: Colors.backgroundWhite + "30",
     justifyContent: "center",
     alignItems: "center",
   },
   contributeEmoji: {
-    fontSize: 32,
+    fontSize: 40,
   },
   contributeContent: {
     flex: 1,
   },
   contributeTitle: {
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: "bold",
-    color: Colors.textPrimary,
+    color: Colors.backgroundWhite,
     marginBottom: 4,
   },
   contributeDescription: {
-    fontSize: 13,
-    color: Colors.textSecondary,
-    lineHeight: 18,
+    fontSize: 14,
+    color: Colors.backgroundWhite,
+    lineHeight: 20,
+    opacity: 0.95,
   },
   modalOverlay: {
     flex: 1,
