@@ -53,7 +53,7 @@ const BibleScreen = ({ navigation }: any) => {
       {/* Header */}
       <View style={styles.header}>
         <Text style={styles.headerTitle}>📖 Bíblia Sagrada</Text>
-        <Text style={styles.headerSubtitle}>Nova Versão Internacional (NVI)</Text>
+        <Text style={styles.headerSubtitle}>Almeida Atualizada</Text>
       </View>
 
       <ScrollView 
