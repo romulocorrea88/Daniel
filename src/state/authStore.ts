@@ -6,7 +6,7 @@ interface User {
   id: string;
   name: string;
   email: string;
-  provider?: string;
+  provider?: "email" | "google" | "apple";
   photoUrl?: string;
 }
 
@@ -24,12 +24,13 @@ interface AuthState {
   isAuthenticated: boolean;
   user: User | null;
   guestPrayers: Prayer[];
-  login: (provider: string, userData: User) => Promise<void>;
+  login: (provider: "email" | "google" | "apple", userData: User) => Promise<void>;
   logout: () => void;
   convertGuestToUser: (userData: User) => Prayer[];
   addGuestPrayer: (prayer: Prayer) => void;
-  updateUser: (userData: User) => void;
+  updateUser: (userData: Partial<User>) => void;
   needsAuth: () => boolean;
+  checkAuthRequired: (action: string) => boolean;
 }
 
 const useAuthStore = create<AuthState>()(
@@ -44,11 +45,11 @@ const useAuthStore = create<AuthState>()(
       guestPrayers: [],
 
       // Login with provider
-      login: async (_provider: string, userData: User) => {
+      login: async (provider: "email" | "google" | "apple", userData: User) => {
         set({
           isGuest: false,
           isAuthenticated: true,
-          user: userData,
+          user: { ...userData, provider },
         });
       },
 
@@ -84,16 +85,29 @@ const useAuthStore = create<AuthState>()(
       },
 
       // Update user data
-      updateUser: (userData: User) => {
-        set({
-          user: userData,
-        });
+      updateUser: (userData: Partial<User>) => {
+        set((state) => ({
+          user: state.user ? { ...state.user, ...userData } : null,
+        }));
       },
 
       // Check if user needs to authenticate
       needsAuth: () => {
         const { isGuest, guestPrayers } = get();
         return isGuest && guestPrayers.length > 0;
+      },
+
+      // Check if authentication is required for an action
+      checkAuthRequired: (action: string) => {
+        const protectedActions = [
+          "create_prayer",
+          "answer_prayer",
+          "highlight_bible",
+          "add_bible_note",
+          "add_bookmark",
+        ];
+        
+        return get().isGuest && protectedActions.includes(action);
       },
     }),
     {
