@@ -3,10 +3,12 @@ import { View, Text, StyleSheet, Modal, TextInput, Pressable, KeyboardAvoidingVi
 import Colors from "../constants/Colors";
 import { Ionicons } from "@expo/vector-icons";
 import useAuthStore from "../state/authStore";
+import usePrayerStore from "../state/prayerStore";
 
 const CreatePrayerModal = ({ visible, onClose, navigation }) => {
-  const { isGuest, addGuestPrayer } = useAuthStore();
-  
+  const { isGuest } = useAuthStore();
+  const { addPrayer } = usePrayerStore();
+
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState("Pessoal");
@@ -20,32 +22,28 @@ const CreatePrayerModal = ({ visible, onClose, navigation }) => {
       return;
     }
 
-    const newPrayer = {
-      id: Date.now().toString(),
+    // Save to prayerStore
+    addPrayer({
       title: title.trim(),
       description: description.trim(),
       category: category,
-      dateCreated: new Date().toISOString(),
-      isAnswered: false,
-    };
-
-    if (isGuest) {
-      addGuestPrayer(newPrayer);
-      onClose();
-      
-      setTimeout(() => {
-        navigation.navigate("Auth");
-      }, 300);
-    } else {
-      // In production: Save to backend
-      onClose();
-    }
+    });
 
     // Reset form
     setTitle("");
     setDescription("");
     setCategory("Pessoal");
     setErrorMessage("");
+
+    // Close modal
+    onClose();
+
+    // If guest, prompt to create account
+    if (isGuest) {
+      setTimeout(() => {
+        navigation.navigate("Auth");
+      }, 300);
+    }
   };
 
   return (

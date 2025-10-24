@@ -2,19 +2,22 @@ import React, { useState, useEffect } from "react";
 import { View, Text, StyleSheet, ScrollView, Pressable, Modal, Alert } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
-import { mockMyPrayers } from "../utils/mockData";
 import CreatePrayerModal from "../components/CreatePrayerModal";
 import useAuthStore from "../state/authStore";
+import usePrayerStore from "../state/prayerStore";
 import Colors from "../constants/Colors";
 
 const MyPrayersScreen = ({ navigation, route }) => {
   const insets = useSafeAreaInsets();
-  const initialFilter = route?.params?.filter || "all";
+  const initialFilter = route?.params?.filter || "active"; // Default to active prayers
   const [filter, setFilter] = useState(initialFilter);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [selectedPrayer, setSelectedPrayer] = useState(null);
   const [showActionModal, setShowActionModal] = useState(false);
-  const { isGuest, guestPrayers } = useAuthStore();
+  const { isGuest } = useAuthStore();
+
+  // Get prayers and actions from prayerStore
+  const { prayers, markPrayerAsAnswered, deletePrayer, stats } = usePrayerStore();
 
   useEffect(() => {
     if (route?.params?.filter) {
@@ -22,10 +25,8 @@ const MyPrayersScreen = ({ navigation, route }) => {
     }
   }, [route?.params?.filter]);
 
-  // Combine mock prayers with guest prayers for display
-  const allPrayers = isGuest 
-    ? [...guestPrayers, ...mockMyPrayers] 
-    : mockMyPrayers;
+  // Use prayers from store
+  const allPrayers = prayers;
 
   const getFilteredPrayers = () => {
     if (filter === "answered") {
@@ -53,13 +54,16 @@ const MyPrayersScreen = ({ navigation, route }) => {
   };
 
   const handleMarkAsAnswered = () => {
-    Alert.alert(
-      "Oração Respondida! 🙏",
-      "Sua oração foi marcada como respondida. Glória a Deus!",
-      [{ text: "Amém", style: "default" }]
-    );
-    setShowActionModal(false);
-    // In production: Update prayer status in backend
+    if (selectedPrayer) {
+      markPrayerAsAnswered(selectedPrayer.id);
+      Alert.alert(
+        "Oração Respondida! 🙏",
+        "Sua oração foi marcada como respondida. Glória a Deus!",
+        [{ text: "Amém", style: "default" }]
+      );
+      setShowActionModal(false);
+      setSelectedPrayer(null);
+    }
   };
 
   const handleDelete = () => {
@@ -72,8 +76,11 @@ const MyPrayersScreen = ({ navigation, route }) => {
           text: "Excluir",
           style: "destructive",
           onPress: () => {
+            if (selectedPrayer) {
+              deletePrayer(selectedPrayer.id);
+            }
             setShowActionModal(false);
-            // In production: Delete from backend
+            setSelectedPrayer(null);
           }
         }
       ]
@@ -83,8 +90,18 @@ const MyPrayersScreen = ({ navigation, route }) => {
   return (
     <View style={[styles.container, { paddingTop: insets.top }]}>
       <View style={styles.header}>
-        <Text style={styles.headerTitle}>Meus Pedidos</Text>
-        <Pressable 
+        <View style={styles.headerLeft}>
+          <Text style={styles.headerTitle}>Meus Pedidos</Text>
+          {stats.answeredPrayers > 0 && (
+            <View style={styles.statsContainer}>
+              <Ionicons name="checkmark-circle" size={16} color={Colors.success} />
+              <Text style={styles.statsText}>
+                {stats.answeredPrayers} {stats.answeredPrayers === 1 ? 'respondida' : 'respondidas'}
+              </Text>
+            </View>
+          )}
+        </View>
+        <Pressable
           style={styles.addButton}
           onPress={() => setShowCreateModal(true)}
         >
@@ -251,10 +268,25 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: Colors.border,
   },
+  headerLeft: {
+    flex: 1,
+  },
   headerTitle: {
     fontSize: 28,
     fontWeight: "bold",
     color: Colors.textPrimary,
+    marginBottom: 4,
+  },
+  statsContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+    marginTop: 4,
+  },
+  statsText: {
+    fontSize: 14,
+    fontWeight: "600",
+    color: Colors.success,
   },
   addButton: {
     padding: 4,
