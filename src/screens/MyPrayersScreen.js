@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, StyleSheet, ScrollView, Pressable, Modal, Alert } from "react-native";
+import { View, Text, StyleSheet, ScrollView, Pressable, Modal, Alert, Share } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import CreatePrayerModal from "../components/CreatePrayerModal";
@@ -17,7 +17,7 @@ const MyPrayersScreen = ({ navigation, route }) => {
   const { isGuest } = useAuthStore();
 
   // Get prayers and actions from prayerStore
-  const { prayers, markPrayerAsAnswered, deletePrayer, stats } = usePrayerStore();
+  const { prayers, markPrayerAsAnswered, deletePrayer, togglePrayerDone, stats } = usePrayerStore();
 
   useEffect(() => {
     if (route?.params?.filter) {
@@ -27,6 +27,12 @@ const MyPrayersScreen = ({ navigation, route }) => {
 
   // Use prayers from store
   const allPrayers = prayers;
+
+  // Check if prayer was done today
+  const isPrayedToday = (prayer) => {
+    const today = new Date().toISOString().split('T')[0];
+    return prayer.lastPrayedDate === today;
+  };
 
   const getFilteredPrayers = () => {
     if (filter === "answered") {
@@ -56,12 +62,54 @@ const MyPrayersScreen = ({ navigation, route }) => {
   const handleMarkAsAnswered = () => {
     if (selectedPrayer) {
       markPrayerAsAnswered(selectedPrayer.id);
+      setShowActionModal(false);
+
+      // Show confirmation and offer to share
       Alert.alert(
         "Oração Respondida! 🙏",
-        "Sua oração foi marcada como respondida. Glória a Deus!",
-        [{ text: "Amém", style: "default" }]
+        "Sua oração foi marcada como respondida. Glória a Deus!\n\nGostaria de compartilhar este testemunho?",
+        [
+          {
+            text: "Não",
+            style: "cancel",
+            onPress: () => setSelectedPrayer(null)
+          },
+          {
+            text: "Compartilhar",
+            style: "default",
+            onPress: () => handleShareAnswer()
+          }
+        ]
       );
-      setShowActionModal(false);
+    }
+  };
+
+  const handleShareAnswer = async () => {
+    if (!selectedPrayer) return;
+
+    try {
+      const message = `🙏 Deus respondeu minha oração!\n\n"${selectedPrayer.title}"\n\n✨ Glória a Deus! Ele é fiel e sempre nos ouve. Continue orando e crendo, pois Deus tem um plano perfeito para sua vida!\n\n#OraçãoRespondida #DeusÉFiel #Testemunho`;
+
+      const result = await Share.share({
+        message: message,
+      });
+
+      if (result.action === Share.sharedAction) {
+        if (result.activityType) {
+          // Shared with activity type
+          console.log("Shared with activity type:", result.activityType);
+        } else {
+          // Shared successfully
+          console.log("Shared successfully");
+        }
+      } else if (result.action === Share.dismissedAction) {
+        // Dismissed
+        console.log("Share dismissed");
+      }
+    } catch (error) {
+      Alert.alert("Erro", "Não foi possível compartilhar. Tente novamente.");
+      console.error("Error sharing:", error);
+    } finally {
       setSelectedPrayer(null);
     }
   };
@@ -160,6 +208,31 @@ const MyPrayersScreen = ({ navigation, route }) => {
             </View>
 
             <Text style={styles.prayerDescription}>{prayer.description}</Text>
+
+            {/* Botão Oração Feita */}
+            {!prayer.isAnswered && (
+              <Pressable
+                style={[
+                  styles.prayerDoneButton,
+                  isPrayedToday(prayer) && styles.prayerDoneButtonActive
+                ]}
+                onPress={() => togglePrayerDone(prayer.id)}
+              >
+                <Ionicons
+                  name={isPrayedToday(prayer) ? "checkmark-circle" : "checkmark-circle-outline"}
+                  size={20}
+                  color={isPrayedToday(prayer) ? Colors.backgroundWhite : Colors.primaryGreen}
+                />
+                <Text
+                  style={[
+                    styles.prayerDoneButtonText,
+                    isPrayedToday(prayer) && styles.prayerDoneButtonTextActive
+                  ]}
+                >
+                  {isPrayedToday(prayer) ? "Oração Feita Hoje" : "Marcar Oração Feita"}
+                </Text>
+              </Pressable>
+            )}
 
             <View style={styles.prayerFooter}>
               <View 
@@ -353,6 +426,31 @@ const styles = StyleSheet.create({
     color: Colors.textSecondary,
     lineHeight: 20,
     marginBottom: 12,
+  },
+  prayerDoneButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 8,
+    paddingVertical: 10,
+    paddingHorizontal: 16,
+    borderRadius: 8,
+    backgroundColor: Colors.background,
+    borderWidth: 2,
+    borderColor: Colors.primaryGreen,
+    marginBottom: 12,
+  },
+  prayerDoneButtonActive: {
+    backgroundColor: Colors.primaryGreen,
+    borderColor: Colors.primaryGreen,
+  },
+  prayerDoneButtonText: {
+    fontSize: 14,
+    fontWeight: "600",
+    color: Colors.primaryGreen,
+  },
+  prayerDoneButtonTextActive: {
+    color: Colors.backgroundWhite,
   },
   prayerFooter: {
     flexDirection: "row",

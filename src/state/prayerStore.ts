@@ -23,6 +23,8 @@ export interface Prayer {
   dateCreated: string;
   isAnswered: boolean;
   answeredDate?: string;
+  prayedToday?: boolean; // Track if prayer was done today
+  lastPrayedDate?: string; // Last date this prayer was prayed
 }
 
 interface PrayerStats {
@@ -36,7 +38,7 @@ interface PrayerState {
   sessions: PrayerSession[];
   prayers: Prayer[];
   stats: PrayerStats;
-  
+
   // Actions
   addPrayerSession: (session: Omit<PrayerSession, "id" | "timestamp">) => void;
   getPrayerSessionsByDate: (date: string) => PrayerSession[];
@@ -45,11 +47,12 @@ interface PrayerState {
   getWeeklyPrayerTime: () => number;
   getMonthlyPrayerTime: () => number;
   getDaysWithPrayer: () => string[];
-  
+
   addPrayer: (prayer: Omit<Prayer, "id" | "dateCreated">) => void;
   markPrayerAsAnswered: (prayerId: string) => void;
   deletePrayer: (prayerId: string) => void;
-  
+  togglePrayerDone: (prayerId: string) => void; // New action for "Oração Feita"
+
   updateStats: () => void;
   calculateConsecutiveDays: () => number;
 }
@@ -169,6 +172,25 @@ const usePrayerStore = create<PrayerState>()(
         }));
 
         get().updateStats();
+      },
+
+      // Toggle prayer as done today
+      togglePrayerDone: (prayerId) => {
+        const today = new Date().toISOString().split('T')[0];
+
+        set((state) => ({
+          prayers: state.prayers.map((prayer) => {
+            if (prayer.id === prayerId) {
+              const isPrayedToday = prayer.lastPrayedDate === today;
+              return {
+                ...prayer,
+                prayedToday: !isPrayedToday,
+                lastPrayedDate: !isPrayedToday ? today : prayer.lastPrayedDate,
+              };
+            }
+            return prayer;
+          }),
+        }));
       },
 
       // Calculate consecutive days of prayer

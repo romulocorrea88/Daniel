@@ -278,7 +278,7 @@ const styles = StyleSheet.create({
   createButtonText: {
     fontSize: 16,
     fontWeight: "600",
-    color: Colors.backgroundWhite,
+    color: "#000000", // Black text for better readability
   },
 });
 
