@@ -8,6 +8,8 @@ interface User {
   email: string;
   provider?: "email" | "google" | "apple";
   photoUrl?: string;
+  city?: string;
+  church?: string;
 }
 
 interface Prayer {
@@ -19,18 +21,41 @@ interface Prayer {
   isAnswered: boolean;
 }
 
+interface NotificationSchedule {
+  id: string;
+  time: string; // HH:mm format
+  enabled: boolean;
+}
+
+interface AppSettings {
+  theme: "light" | "dark" | "auto";
+  language: "pt" | "en" | "es";
+  notifications: NotificationSchedule[];
+}
+
 interface AuthState {
   isGuest: boolean;
   isAuthenticated: boolean;
   user: User | null;
   guestPrayers: Prayer[];
+  settings: AppSettings;
+  
   login: (provider: "email" | "google" | "apple", userData: User) => Promise<void>;
   logout: () => void;
   convertGuestToUser: (userData: User) => Prayer[];
   addGuestPrayer: (prayer: Prayer) => void;
   updateUser: (userData: Partial<User>) => void;
+  updateUserPhoto: (photoUrl: string) => void;
   needsAuth: () => boolean;
   checkAuthRequired: (action: string) => boolean;
+  
+  // Settings
+  updateTheme: (theme: "light" | "dark" | "auto") => void;
+  updateLanguage: (language: "pt" | "en" | "es") => void;
+  addNotification: (time: string) => void;
+  removeNotification: (id: string) => void;
+  toggleNotification: (id: string) => void;
+  updateNotificationTime: (id: string, time: string) => void;
 }
 
 const useAuthStore = create<AuthState>()(
@@ -43,6 +68,13 @@ const useAuthStore = create<AuthState>()(
       
       // Guest mode data (temporary, not persisted to backend)
       guestPrayers: [],
+      
+      // App Settings
+      settings: {
+        theme: "light",
+        language: "pt",
+        notifications: [],
+      },
 
       // Login with provider
       login: async (provider: "email" | "google" | "apple", userData: User) => {
@@ -90,6 +122,13 @@ const useAuthStore = create<AuthState>()(
           user: state.user ? { ...state.user, ...userData } : null,
         }));
       },
+      
+      // Update user photo
+      updateUserPhoto: (photoUrl: string) => {
+        set((state) => ({
+          user: state.user ? { ...state.user, photoUrl } : null,
+        }));
+      },
 
       // Check if user needs to authenticate
       needsAuth: () => {
@@ -109,6 +148,67 @@ const useAuthStore = create<AuthState>()(
         
         return get().isGuest && protectedActions.includes(action);
       },
+      
+      // Settings - Theme
+      updateTheme: (theme: "light" | "dark" | "auto") => {
+        set((state) => ({
+          settings: { ...state.settings, theme },
+        }));
+      },
+      
+      // Settings - Language
+      updateLanguage: (language: "pt" | "en" | "es") => {
+        set((state) => ({
+          settings: { ...state.settings, language },
+        }));
+      },
+      
+      // Settings - Notifications
+      addNotification: (time: string) => {
+        const newNotification: NotificationSchedule = {
+          id: `notif_${Date.now()}`,
+          time,
+          enabled: true,
+        };
+        
+        set((state) => ({
+          settings: {
+            ...state.settings,
+            notifications: [...state.settings.notifications, newNotification],
+          },
+        }));
+      },
+      
+      removeNotification: (id: string) => {
+        set((state) => ({
+          settings: {
+            ...state.settings,
+            notifications: state.settings.notifications.filter((n) => n.id !== id),
+          },
+        }));
+      },
+      
+      toggleNotification: (id: string) => {
+        set((state) => ({
+          settings: {
+            ...state.settings,
+            notifications: state.settings.notifications.map((n) =>
+              n.id === id ? { ...n, enabled: !n.enabled } : n
+            ),
+          },
+        }));
+      },
+      
+      updateNotificationTime: (id: string, time: string) => {
+        set((state) => ({
+          settings: {
+            ...state.settings,
+            notifications: state.settings.notifications.map((n) =>
+              n.id === id ? { ...n, time } : n
+            ),
+          },
+        }));
+      },
     }),
     {
       name: "auth-storage",
@@ -117,6 +217,7 @@ const useAuthStore = create<AuthState>()(
         isGuest: state.isGuest,
         isAuthenticated: state.isAuthenticated,
         user: state.user,
+        settings: state.settings,
       }),
     }
   )

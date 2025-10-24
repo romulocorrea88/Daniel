@@ -35,19 +35,23 @@ const ProfileScreen = ({ navigation }) => {
   };
 
   const handleNotifications = () => {
-    Alert.alert(
-      "Notificações",
-      "Configure seus lembretes de oração diários. Esta funcionalidade será implementada em breve.",
-      [{ text: "OK" }]
-    );
+    navigation.navigate("Settings");
   };
 
   const handleSettings = () => {
-    Alert.alert(
-      "Configurações",
-      "Personalize sua experiência no app. Esta funcionalidade será implementada em breve.",
-      [{ text: "OK" }]
-    );
+    navigation.navigate("Settings");
+  };
+
+  const handleEditProfile = () => {
+    if (isGuest) {
+      Alert.alert(
+        "Funcionalidade Premium",
+        "Faça login para editar seu perfil",
+        [{ text: "OK" }]
+      );
+      return;
+    }
+    navigation.navigate("EditProfile");
   };
 
   const handlePrivacyPolicy = () => {
@@ -129,9 +133,27 @@ const ProfileScreen = ({ navigation }) => {
               <Text style={styles.loginButtonText}>Criar Conta / Entrar</Text>
             </Pressable>
           ) : (
-            <Pressable style={styles.editButton}>
+            <Pressable style={styles.editButton} onPress={handleEditProfile}>
               <Text style={styles.editButtonText}>Editar Perfil</Text>
             </Pressable>
+          )}
+          
+          {/* User Info */}
+          {!isGuest && user && (
+            <View style={styles.userInfo}>
+              {user.city && (
+                <View style={styles.userInfoItem}>
+                  <Ionicons name="location" size={16} color={Colors.textSecondary} />
+                  <Text style={styles.userInfoText}>{user.city}</Text>
+                </View>
+              )}
+              {user.church && (
+                <View style={styles.userInfoItem}>
+                  <Ionicons name="business" size={16} color={Colors.textSecondary} />
+                  <Text style={styles.userInfoText}>{user.church}</Text>
+                </View>
+              )}
+            </View>
           )}
         </View>
 
@@ -315,6 +337,19 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: "600",
     color: Colors.backgroundWhite,
+  },
+  userInfo: {
+    marginTop: 12,
+    gap: 8,
+  },
+  userInfoItem: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+  },
+  userInfoText: {
+    fontSize: 14,
+    color: Colors.textSecondary,
   },
   statsSection: {
     paddingHorizontal: 20,

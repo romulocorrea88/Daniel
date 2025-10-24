@@ -14,6 +14,8 @@ import BibleScreen from "../screens/BibleScreen";
 import BibleBookScreen from "../screens/BibleBookScreen";
 import BibleReaderScreen from "../screens/BibleReaderScreen";
 import ProfileScreen from "../screens/ProfileScreen";
+import EditProfileScreen from "../screens/EditProfileScreen";
+import SettingsScreen from "../screens/SettingsScreen";
 import PrayerModeScreen from "../screens/PrayerModeScreen";
 import HistoricoEstatisticas from "../screens/HistoricoEstatisticas";
 import PrivacyPolicyScreen from "../screens/PrivacyPolicyScreen";
@@ -151,6 +153,22 @@ const RootNavigator = () => {
         <Stack.Screen 
           name="BibleReader" 
           component={BibleReaderScreen}
+          options={{
+            animation: "slide_from_right",
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen 
+          name="EditProfile" 
+          component={EditProfileScreen}
+          options={{
+            animation: "slide_from_right",
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen 
+          name="Settings" 
+          component={SettingsScreen}
           options={{
             animation: "slide_from_right",
             headerShown: false,
